@@ -1,10 +1,10 @@
-import { View, StyleSheet, Dimensions, Image, FlatList } from "react-native";
+import { View, StyleSheet, Dimensions, Image, FlatList, Pressable } from "react-native";
 import { Text, Button } from "@ui-kitten/components";
 import { Screen } from "@/components/Screen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from '../../theme'
 import { tags } from "react-native-svg/lib/typescript/xml";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Size } from "@ui-kitten/components/devsupport";
 
 const LISTMARGIN = 10;
@@ -28,8 +28,39 @@ export default function SearchScreen() {
         tags: ["Parking"]
     };
 
-    const flatListRef = useRef<FlatList| null>(null)
-    const viewConFig = {viewAreaCoveragePercentThreshold: 95};
+    const flatListRef = useRef<FlatList | null>(null);
+    const viewConFig = { viewAreaCoveragePercentThreshold: 95 };
+    const [activeIndex, setActiveIndex] = useState(0);
+    const onViewRef = useRef(({ changed }: { changed: any }) => {
+        if (changed[0].isViewable) {
+            setActiveIndex(changed[0].index)
+        }
+    });
+
+    const handlePressLeft = () => {
+        if (activeIndex === 0)
+            return flatListRef.current?.scrollToIndex({
+                animated: false,
+                index: property.images.length - 1,
+        }); 
+
+        flatListRef.current?.scrollToIndex({
+            index: activeIndex - 1,
+        });
+    };
+
+    const handlePressRight = () => {
+        if (activeIndex === property.images.length - 1)
+            return flatListRef.current?.scrollToIndex({
+                animated: false,
+                index: 0,
+        }); 
+
+        flatListRef.current?.scrollToIndex({
+            index: activeIndex + 1,
+        });
+    };
+
 
     return (
         <Screen style={{ marginHorizontal: LISTMARGIN }}>
@@ -42,7 +73,8 @@ export default function SearchScreen() {
                     snapToAlignment="center"
                     pagingEnabled
                     viewabilityConfig={viewConFig}
-                    renderItem={({item, index}) => (
+                    onViewableItemsChanged={onViewRef.current}
+                    renderItem={({ item, index }) => (
                         <Image
                             source={{ uri: item }}
                             style={{
@@ -55,9 +87,21 @@ export default function SearchScreen() {
                     )}
                     keyExtractor={(item) => item}
                 />
+                <Pressable
+                    style={{ position: "absolute", top: 95, left: 5 }}
+                    onPress={handlePressLeft}
+                >
+                    <MaterialCommunityIcons name="chevron-left" color="white" size={45} />
+                </Pressable>
+                <Pressable
+                    style={{ position: "absolute", top: 95, right: 5 }}
+                    onPress={handlePressRight}
+                >
+                    <MaterialCommunityIcons name="chevron-right" color="white" size={45} />
+                </Pressable>
                 <View
                     style={{
-                        paddingVertical: 10, 
+                        paddingVertical: 10,
                         paddingHorizontal: 5,
                         borderColor: "#d3d3d3",
                         borderWidth: 1,
