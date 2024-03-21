@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { theme } from '../../theme'
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

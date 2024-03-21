@@ -1,14 +1,11 @@
-import { View, StyleSheet, Dimensions, Image, FlatList, Pressable, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { Text, Button } from "@ui-kitten/components";
-import { Screen } from "@/components/Screen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from '../theme'
-import { useRef, useState } from "react";
 import { Property } from "@/types/property";
 import { ImageCarousel } from "./ImageCarousel";
 
 const LISTMARGIN = 10;
-const WIDTH = Dimensions.get("screen").width - LISTMARGIN * 2;
 
 export const Card = ({
     property,

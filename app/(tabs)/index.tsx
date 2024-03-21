@@ -1,9 +1,5 @@
-import { View, StyleSheet, Dimensions, Image, FlatList, Pressable } from "react-native";
-import { Text, Button } from "@ui-kitten/components";
+import { Dimensions, FlatList, } from "react-native";
 import { Screen } from "@/components/Screen";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { theme } from '../../theme'
-import { useRef, useState } from "react";
 import { Card } from "@/components/Card";
 
 const LISTMARGIN = 10;
