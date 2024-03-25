@@ -2,7 +2,7 @@ import { FlatList, Pressable, Image , StyleSheet} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
 
-import { WIDTH } from "@/constants";
+import { WIDTH } from "../constants";
 
 export const ImageCarousel = ({images}: { images: string[]}) => {
     const flatListRef = useRef<FlatList | null>(null);
