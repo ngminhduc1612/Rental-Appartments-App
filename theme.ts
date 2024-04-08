@@ -3,6 +3,7 @@ import { light } from '@eva-design/eva';
 export const theme = {
   ...light,
 
+  "color-gray": "#d3d3d3",
   "color-primary-100": "#DAECFD",
   "color-primary-200": "#B7D7FB",
   "color-primary-300": "#90BCF3",

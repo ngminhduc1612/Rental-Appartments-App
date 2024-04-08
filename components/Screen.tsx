@@ -10,6 +10,7 @@ export const Screen = ({
     return <SafeAreaView
         style={[styles.container, style]}
     >
+        
         {children}
     </SafeAreaView>
 }

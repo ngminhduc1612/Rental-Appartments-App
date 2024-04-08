@@ -26,6 +26,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Search',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="magnify" color={color} />,
         }}
       />
