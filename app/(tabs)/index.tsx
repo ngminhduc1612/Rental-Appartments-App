@@ -1,5 +1,6 @@
-import { Animated } from "react-native";
+import { Animated, View } from "react-native";
 import { useState } from "react";
+import MapView from "react-native-maps";
 
 import { Screen } from "@/components/Screen";
 import { Card } from "@/components/Card";
@@ -94,34 +95,41 @@ export default function SearchScreen() {
     }
     ];
 
+    const [mapShown, setMapShown] = useState<boolean>(false)  //Maps state
     const [scrollAnimation] = useState(new Animated.Value(0));
 
     return (
         <Screen>
-            <AnimatedListHeader scrollAnimation={scrollAnimation} />
-            <Animated.FlatList
-                onScroll={Animated.event([
-                    {
-                        nativeEvent: {
-                            contentOffset: {
-                                y: scrollAnimation,
+            <AnimatedListHeader scrollAnimation={scrollAnimation} setMapShown={setMapShown} mapShown={mapShown} /> 
+            {
+                mapShown ? 
+                <View style={{ flex: 1, overflow:"hidden"}} >
+                    <MapView style={{ height:"100%", width:"100%"}}/>
+                </View> :
+                <Animated.FlatList
+                    onScroll={Animated.event([
+                        {
+                            nativeEvent: {
+                                contentOffset: {
+                                    y: scrollAnimation,
+                                },
                             },
                         },
-                    },
-                ],
-                    { useNativeDriver: true }
-                )}
-                contentContainerStyle={{ paddingTop: HEADERHEIGHT - 20 }}
-                bounces={false}
-                scrollEventThrottle={16}
-                data={properties}
-                keyExtractor={(item) => item.id.toString()}
-                showsVerticalScrollIndicator={false}
-                style={{ marginHorizontal: LISTMARGIN }}
-                renderItem={({ item }) => (
-                    <Card style={{ marginVertical: 5 }} property={item} />
-                )}
-            />
+                    ],
+                        { useNativeDriver: true }
+                    )}
+                    contentContainerStyle={{ paddingTop: HEADERHEIGHT - 20 }}
+                    bounces={false}
+                    scrollEventThrottle={16}
+                    data={properties}
+                    keyExtractor={(item) => item.id.toString()}
+                    showsVerticalScrollIndicator={false}
+                    style={{ marginHorizontal: LISTMARGIN }}
+                    renderItem={({ item }) => (
+                        <Card style={{ marginVertical: 5 }} property={item} />
+                    )}
+                />
+            }
         </Screen>
     );
 };
