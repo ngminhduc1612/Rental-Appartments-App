@@ -23,7 +23,7 @@ export const properties: Property[] = [
     {
         id: 2,
         images: [
-            "https://visaho.vn/upload_images/images/2022/04/01/dien-tich-can-ho-chung-cu-2-min.jpg",
+            "https://www.hoteljob.vn/uploads/images/19-03-29-13/khu-nghi-duong-co-canh-quan-dep-nam-2018-04.png",
             "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
         ],
         rentLow: 3750,

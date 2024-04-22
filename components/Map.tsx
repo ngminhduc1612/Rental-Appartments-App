@@ -1,6 +1,6 @@
-import MapView from "react-native-maps"
+import MapView, { LatLng, Region } from "react-native-maps"
 import { View, StyleSheet, Platform } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { Property } from "@/types/property";
@@ -11,7 +11,39 @@ import { Card } from "./Card";
 export const Map = ({ properties }: { properties: Property[] }) => {
     const [activeIndex, setActiveIndex] = useState(-1);
     const mapRef = useRef<MapView | null>(null)
-    const naigation = useNavigation()
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        if (mapRef.current && properties.length > 0) {
+            // Lấy vị trí của tài sản đầu tiên
+            const firstPropertyLocation: LatLng = {
+                latitude: properties[0].lat,
+                longitude: properties[0].lng
+            };
+
+            // Tạo một vùng chứa tất cả các tài sản
+            const coordinates = properties.map(property => ({
+                latitude: property.lat,
+                longitude: property.lng
+            }));
+            const region = coordinates.reduce(
+                (acc, curr) => ({
+                    latitude: Math.min(acc.latitude, curr.latitude),
+                    longitude: Math.min(acc.longitude, curr.longitude),
+                    latitudeDelta: Math.abs(acc.latitude - curr.latitude) * 1.2,
+                    longitudeDelta: Math.abs(acc.longitude - curr.longitude) * 1.2
+                }),
+                { latitude: Infinity, longitude: Infinity, latitudeDelta: 0, longitudeDelta: 0 }
+            );
+
+            // Di chuyển bản đồ đến vị trí đầu tiên và điều chỉnh để hiển thị tất cả các tài sản
+            mapRef.current.animateToRegion(region, 1000);
+            mapRef.current.fitToCoordinates(coordinates, {
+                edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+                animated: true
+            });
+        }
+    }, [properties]);
 
     const handleMarkerPress = (index: number) => {
         if (Platform.OS === "ios") {
@@ -26,7 +58,7 @@ export const Map = ({ properties }: { properties: Property[] }) => {
         }
 
         setActiveIndex(index);
-        naigation.setOptions({ tabBarStyle: {display: "none"}});
+        navigation.setOptions({ tabBarStyle: {display: "none"}});
     };
     return (
         <View style={styles.container} >
