@@ -1,5 +1,5 @@
-import MapView, { LatLng, Region } from "react-native-maps"
-import { View, StyleSheet, Platform } from "react-native";
+import MapView, { LatLng } from "react-native-maps"
+import { View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -7,6 +7,7 @@ import { Property } from "@/types/property";
 import { MapMarker } from "./MapMarker";
 import { theme } from "@/theme";
 import { Card } from "./Card";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const Map = ({ properties }: { properties: Property[] }) => {
     const [activeIndex, setActiveIndex] = useState(-1);
@@ -45,6 +46,17 @@ export const Map = ({ properties }: { properties: Property[] }) => {
         }
     }, [properties]);
 
+    const unFocusProperty = () => {
+        setActiveIndex(-1);
+        navigation.setOptions({ tabBarStyle: { display: "flex" } });
+    }
+
+    const handleMapPress = () => {
+        if (Platform.OS === "android") {
+            unFocusProperty();
+        }
+    }
+
     const handleMarkerPress = (index: number) => {
         if (Platform.OS === "ios") {
             setTimeout(() => {
@@ -58,11 +70,11 @@ export const Map = ({ properties }: { properties: Property[] }) => {
         }
 
         setActiveIndex(index);
-        navigation.setOptions({ tabBarStyle: {display: "none"}});
+        navigation.setOptions({ tabBarStyle: { display: "none" } });
     };
     return (
         <View style={styles.container} >
-            <MapView style={styles.map} userInterfaceStyle={"light"} ref={mapRef}>
+            <MapView style={styles.map} userInterfaceStyle={"light"} ref={mapRef} onPress={handleMapPress}>
                 {properties.map((i, index) => (
                     <MapMarker
                         lat={i.lat}
@@ -76,7 +88,19 @@ export const Map = ({ properties }: { properties: Property[] }) => {
                     />
                 ))}
             </MapView>
-            {activeIndex > -1 && <Card property={properties[activeIndex]} style={styles.card}/>}
+            {activeIndex > -1 && (
+                <>
+                    {Platform.OS === "ios" &&
+                        <TouchableOpacity style={styles.exit} onPress={unFocusProperty}>
+                            <MaterialCommunityIcons
+                                name="close"
+                                color={theme["color-primary-500"]}
+                                size={24}
+                            />
+                        </TouchableOpacity>}
+                    <Card property={properties[activeIndex]} style={styles.card} />
+                </>
+            )}
         </View>
     );
 };
@@ -94,5 +118,13 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 10,
         height: 360,
+    },
+    exit: {
+        backgroundColor: "#fff",
+        padding: 10,
+        position: "absolute",
+        top: 170,
+        left: 15,
+        borderRadius: 30,
     }
 })
