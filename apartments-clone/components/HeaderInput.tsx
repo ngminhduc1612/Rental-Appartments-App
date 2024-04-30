@@ -1,14 +1,16 @@
 import { Platform, TouchableOpacity, StyleSheet} from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "@ui-kitten/components";
+import { useNavigation } from "@react-navigation/native";
 
 import { theme } from "../theme";
 import { Row } from "./Row";
 
 export const HeaderInput = () => {
+    const navigation = useNavigation();
     return <TouchableOpacity
     style={styles.container}
-    onPress={() => console.log("navigate to input screen")}
+    onPress={() => navigation.navigate('findLocationScreen')}
 >
     <Row style={{ alignItems: "center" }}>
         <MaterialCommunityIcons

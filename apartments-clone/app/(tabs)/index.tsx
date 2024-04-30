@@ -1,10 +1,9 @@
 import { Animated, View } from "react-native";
 import { useState } from "react";
-import MapView from "react-native-maps";
 
 import { Screen } from "@/components/Screen";
 import { Card } from "@/components/Card";
-import { HEADERHEIGHT, LISTMARGIN } from "@/constants";
+import { HEADERHEIGHT } from "@/constants";
 import { AnimatedListHeader } from "@/components/AnimatedListHeader";
 import { properties } from "@/data/property";
 import { Map } from "@/components/Map";
