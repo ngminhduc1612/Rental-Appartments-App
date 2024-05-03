@@ -25,9 +25,22 @@ export default function FindLocationScreen() {
     const handleSubmitEditing = async () => {
         const locations = await getSuggestedLocations(value);
         if (locations.length > 0) {
-             console.log("navigate to search screen passing in", locations[0])
+            handleNavigate(locations[0]);
         }
      };
+
+    const handleNavigate = (location: Location) => {
+        navigation.navigate("index", {
+          screen: "index",
+          params: {
+            location: getFormattedLationText(location),
+            lat: location.lat,
+            lon: location.lon,
+            boundingBox: location.boundingbox,
+          },
+        });
+      };
+
     const getInput = () => {
         if (Platform.OS === "ios")
             return (
@@ -91,7 +104,7 @@ export default function FindLocationScreen() {
                     keyExtractor={(item, index) => item.place_id + index}
                     renderItem={({item, index}) => (
                         <TouchableOpacity
-                            onPress={() => {console.log(item)}}
+                            onPress={() => {handleNavigate(item)}}
                         >
                             <SuggestedText locationItem={item} />
                         </TouchableOpacity>
