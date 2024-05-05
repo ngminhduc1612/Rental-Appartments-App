@@ -19,15 +19,29 @@ export default function FindLocationScreen() {
         setValue(val);
         if (val.length > 2) {
             const locations = await getSuggestedLocations(val);
-            if (locations.length > 0) setSuggestions(locations); 
+            if (locations.length > 0) setSuggestions(locations);
         } else if (val.length === 0) setSuggestions([])
-     };
+    };
+
     const handleSubmitEditing = async () => {
         const locations = await getSuggestedLocations(value);
         if (locations.length > 0) {
-             console.log("navigate to search screen passing in", locations[0])
+            handleNavigate(locations[0])
         }
-     };
+    };
+
+    const handleNavigate = (location: Location) => {
+        navigation.navigate("(tabs)", {
+            screen: "index",
+            params: {
+                boundingBox: location.boundingbox,
+                location: getFormattedLocationText(location),
+                lat: location.lat,
+                lon: location.lon,
+            },
+        });
+    };
+
     const getInput = () => {
         if (Platform.OS === "ios")
             return (
@@ -64,15 +78,15 @@ export default function FindLocationScreen() {
         )
     };
 
-    const getFormattedLationText = (item: Location) => {
+    const getFormattedLocationText = (item: Location) => {
         let location = item.address.name;
         if (item.type === "city" && item.address.state)
             location += ", " + item.address.state;
         return location;
     }
 
-    const SuggestedText = ({ locationItem} : {locationItem: Location}) => {
-        const location = getFormattedLationText(locationItem);
+    const SuggestedText = ({ locationItem }: { locationItem: Location }) => {
+        const location = getFormattedLocationText(locationItem);
         return (
             <Row style={styles.suggestionContainer}>
                 <Text>{location}</Text>
@@ -84,20 +98,20 @@ export default function FindLocationScreen() {
             {Platform.OS === "ios" ? <ModalHeader /> : null}
             <View style={styles.screenContent}>
                 {getInput()}
-                {suggestions.length > 0 ? 
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={suggestions}
-                    keyExtractor={(item, index) => item.place_id + index}
-                    renderItem={({item, index}) => (
-                        <TouchableOpacity
-                            onPress={() => {console.log(item)}}
-                        >
-                            <SuggestedText locationItem={item} />
-                        </TouchableOpacity>
-                    )}
-                />
-                : null}
+                {suggestions.length > 0 ?
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={suggestions}
+                        keyExtractor={(item, index) => item.place_id + index}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity
+                                onPress={() => { handleNavigate(item) }}
+                            >
+                                <SuggestedText locationItem={item} />
+                            </TouchableOpacity>
+                        )}
+                    />
+                    : null}
             </View>
         </Screen>
     );
