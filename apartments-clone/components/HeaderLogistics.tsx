@@ -41,14 +41,16 @@ const HeaderLogisticsButton = ({
 
 export const HeaderLogistics = ({
     mapShown,
-    setMapShown
+    setMapShown,
+    availableProperties,
 }: {
-    mapShown: boolean,
-    setMapShown: (bool: boolean) => void
+    mapShown: boolean;
+    setMapShown: (bool: boolean) => void;
+    availableProperties?: number;
 }) => {
     const navigation = useNavigation();
-    
-    const handleMapPress = () =>{
+
+    const handleMapPress = () => {
         navigation.setOptions({ tabBarStyle: { display: "flex" } });
         if (mapShown) return setMapShown(false)
         setMapShown(true);
@@ -63,7 +65,10 @@ export const HeaderLogistics = ({
                     color={theme["color-primary-500"]}
                 />
                 <Text category={"c1"} appearance={"hint"}>
-                    12 Locations Available
+                    {availableProperties
+                        ? `${availableProperties} Spaces Available`
+                        : `Search Spaces`
+                    }
                 </Text>
                 <HeaderLogisticsButton
                     label="Save"

@@ -97,3 +97,24 @@ export const properties: Property[] = [
         lng: 105.84256654050041,
     }
 ]
+
+export const getPropertiesInArea = (boundingBox: number[]): Property[] => {
+    const minLat = boundingBox[0];
+    const maxLat = boundingBox[1];
+    const minLng = boundingBox[2];
+    const maxLng = boundingBox[3];
+  
+    const propertiesInArea: Property[] = [];
+  
+    for (let i in properties) {
+      if (
+        properties[i].lat <= maxLat &&
+        properties[i].lat >= minLat &&
+        properties[i].lng <= maxLng &&
+        properties[i].lng >= minLng
+      )
+        propertiesInArea.push(properties[i]);
+    }
+  
+    return propertiesInArea;
+  };

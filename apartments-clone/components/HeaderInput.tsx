@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { theme } from "../theme";
 import { Row } from "./Row";
 
-export const HeaderInput = () => {
+export const HeaderInput = ({ location }: { location: string }) => {
     const navigation = useNavigation();
     return <TouchableOpacity
     style={styles.container}
@@ -18,7 +18,7 @@ export const HeaderInput = () => {
             color={theme["color-primary-500"]}
             size={28}
         />
-        <Text style={styles.text}>Find a Location</Text>
+        <Text style={styles.text}>{location}</Text>
     </Row>
 </TouchableOpacity>
 }

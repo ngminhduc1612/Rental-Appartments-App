@@ -8,6 +8,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 import { theme } from '../theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,6 +28,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+  const queryClient = new QueryClient();
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -44,9 +46,12 @@ export default function RootLayout() {
   }
 
   return (
-    <ApplicationProvider {...eva} theme={theme}>
-      <RootLayoutNav />
-    </ApplicationProvider>);
+    <QueryClientProvider client={queryClient}>
+      <ApplicationProvider {...eva} theme={theme}>
+        <RootLayoutNav />
+      </ApplicationProvider>
+    </QueryClientProvider>
+  );
 }
 
 function RootLayoutNav() {

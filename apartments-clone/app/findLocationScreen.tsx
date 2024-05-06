@@ -1,19 +1,47 @@
-import { Platform, StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import { Platform, StyleSheet, View, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import { Input, Button, Text } from "@ui-kitten/components";
-
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
+import { useQueryClient } from "react-query";
+
 import { theme } from "../theme";
 import { Row } from "@/components/Row";
 import { useNavigation } from "@react-navigation/native";
 import { getSuggestedLocations } from "@/services/location";
 import { Location } from "@/types/locationIQ";
+import { CurrentLocationButton } from "@/components/CurrentLocationButton";
+import { getFormattedLocationText } from "@/utils/getFormattedLocationText";
+import { RecentSearchList } from "@/components/RecentSearchList";
 
 export default function FindLocationScreen() {
     const [value, setValue] = useState("");
     const [suggestions, setSuggestions] = useState<Location[]>([]);;
     const navigation = useNavigation();
+    const queryClient = useQueryClient();
+    const recentSearches: Location[] | undefined =
+        queryClient.getQueryData("recentSearches");
+
+    const setRecentSearch = (location: Location) => {
+        queryClient.setQueryData("recentSearches", () => {
+            if (recentSearches) {
+                let included = false;
+                for (let i of recentSearches) {
+                    if (
+                        i.display_name === location.display_name &&
+                        i.lon === location.lon &&
+                        i.lat === location.lat
+                    ) {
+                        included = true;
+                        break;
+                    }
+                }
+                if (!included) return [location, ...recentSearches];
+                return recentSearches;
+            }
+            return [location];
+        });
+    };
 
     const handleChange = async (val: string) => {
         setValue(val);
@@ -31,6 +59,7 @@ export default function FindLocationScreen() {
     };
 
     const handleNavigate = (location: Location) => {
+        setRecentSearch(location)
         navigation.navigate("(tabs)", {
             screen: "index",
             params: {
@@ -78,13 +107,6 @@ export default function FindLocationScreen() {
         )
     };
 
-    const getFormattedLocationText = (item: Location) => {
-        let location = item.address.name;
-        if (item.type === "city" && item.address.state)
-            location += ", " + item.address.state;
-        return location;
-    }
-
     const SuggestedText = ({ locationItem }: { locationItem: Location }) => {
         const location = getFormattedLocationText(locationItem);
         return (
@@ -111,7 +133,14 @@ export default function FindLocationScreen() {
                             </TouchableOpacity>
                         )}
                     />
-                    : null}
+                    : <ScrollView bounces={false}>
+                        <CurrentLocationButton style={styles.currentLocationButton} />
+                        <RecentSearchList
+                            style={styles.recentSearchContainer}
+                            recentSearches={recentSearches}
+                        />
+                    </ScrollView>
+                }
             </View>
         </Screen>
     );
@@ -129,5 +158,11 @@ const styles = StyleSheet.create({
         padding: 15,
         borderBottomWidth: 1,
         borderBottomColor: theme["color-gray"],
+    },
+    currentLocationButton: {
+        marginTop: 40,
+    },
+    recentSearchContainer: {
+        marginTop: 30,
     }
 });
