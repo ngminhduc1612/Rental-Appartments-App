@@ -34,6 +34,7 @@ export default function TabLayout() {
         name="savedScreen"
         options={{
           title: 'Saved',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="heart-outline" color={color} />,
         }}
       />
@@ -41,6 +42,7 @@ export default function TabLayout() {
         name="accountScreen"
         options={{
           title: 'Account',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="account-circle-outline" color={color} />,
         }}
       />
