@@ -51,7 +51,7 @@ export default function SearchScreen(
                 scrollAnimation={scrollAnimation}
                 setMapShown={setMapShown}
                 mapShown={mapShown}
-                location={route.params ? route.params.location : "Find a Location"}
+                location={location ? location : "Find a Location"}
                 availableProperties={
                     properties ? properties.length : undefined
                 }
@@ -61,6 +61,9 @@ export default function SearchScreen(
                     <Map
                         properties={properties}
                         mapRef={mapRef}
+                        location={location ? location : "Find a Location"}
+                        setLocation={setLocation}
+                        setProperties={setProperties}
                         initialRegion={
                             route?.params
                                 ? {
