@@ -13,8 +13,8 @@ export const ButtonList = ({
     data: { label: string; onPress: () => void }[];
     header?: string;
     style?: ViewStyle | ViewStyle[];
-    borderTop: boolean;
-    marginTop: boolean;
+    borderTop?: boolean;
+    marginTop?: boolean;
 }) => {
     const getListHeaderComponent = () => {
         if (!header) return null;

@@ -5,9 +5,10 @@ import { Text, Button } from "@ui-kitten/components";
 import { Screen } from "@/components/Screen";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
 import { theme } from "@/theme";
+import { ButtonList } from "@/components/ButtonList";
 
 export default function AccountScreen() {
-    const user = false;
+    const user = true;
     const navigation = useNavigation();
 
     const firstSignOutButtons = [
@@ -116,6 +117,41 @@ export default function AccountScreen() {
                         </>
                     )}
                 </View>
+                {user ? (<>
+                    <ButtonList data={rentingButtons} header={"Renting Made Easy"} />
+                    <ButtonList data={accountButtons} header={"My Account"} />
+                    <ButtonList
+                        data={rentalManagementButtons}
+                        header={"Rental Manager Tools"}
+                    />
+                    <ButtonList data={supportButtons} header={"Support"} />
+                    <View
+                        style={[
+                            styles.specialMarginVertical,
+                            styles.defaultMarginHorizontal,
+                        ]}
+                    >
+                        <Button
+                            appearance={"ghost"}
+                            style={styles.button}
+                            onPress={() => console.log("log users out")}
+                        >
+                            Sign Out
+                        </Button>
+                    </View>
+                </>
+                ) : (
+                    <>
+                        <ButtonList data={firstSignOutButtons} borderTop />
+                        <ButtonList data={supportButtons} header="Support" marginTop />
+                        <Text
+                            appearance={"hint"}
+                            style={[styles.brandText, styles.specialMarginVertical]}
+                        >
+                            KaiNguyen.com Version 1.0.0
+                        </Text>
+                    </>
+                )}
             </ScrollView>
         </Screen>
     );
@@ -162,4 +198,15 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginHorizontal: 15,
     },
+    specialMarginVertical: {
+        marginTop: 30,
+        marginBottom: 20,
+    },
+    button: {
+        marginBottom: 15,
+        borderColor: theme["color-primary-500"],
+    },
+    brandText: {
+        textAlign: "center"
+    }
 });
