@@ -8,7 +8,7 @@ import { theme } from "@/theme";
 import { ButtonList } from "@/components/ButtonList";
 
 export default function AccountScreen() {
-    const user = true;
+    const user = false;
     const navigation = useNavigation();
 
     const firstSignOutButtons = [
@@ -153,6 +153,11 @@ export default function AccountScreen() {
                     </>
                 )}
             </ScrollView>
+            <Button
+                onPress={() => navigation.navigate("resetPasswordScreen", { token: "sdasdasd" })}
+            >
+                Reset Password
+            </Button>
         </Screen>
     );
 };

@@ -5,17 +5,18 @@ import { useNavigation } from "@react-navigation/native";
 import { theme } from "../theme";
 
 export const SignUpAndSignInButtons = ({ style }: { style?: ViewStyle }) => {
+    const navigation = useNavigation();
     return (
         <View style={style}>
             <Button
-                onPress={() => console.log("navigate to SignIn")}
+                onPress={() => navigation.navigate("signInScreen")}
             >
                 Sign In
             </Button>
             <Button
                 appearance={"ghost"}
                 style={styles.signUpButton}
-                onPress={() => console.log("navigate to SignUp")}
+                onPress={() => navigation.navigate("signUpScreen")}
             >
                 Create Acount
             </Button>
