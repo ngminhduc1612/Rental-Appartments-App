@@ -4,7 +4,6 @@ import { Text, Input, Button } from "@ui-kitten/components";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
-import { err } from "react-native-svg";
 
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
