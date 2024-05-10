@@ -10,13 +10,15 @@ import { properties } from "@/data/property";
 import { Card } from "@/components/Card";
 import { Property } from "@/types/property";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SavedScreen() {
     const [activeIndex, setActiveIndex] = useState<number>(0); // Đánh dấu button nào đang active, thay đổi màu
-    const user = false; //Test hiện 2 buttons nếu user chưa có tài khoản
     const likedProperties = undefined;
     const contactedProperties = undefined;
     const applicationProperties = undefined;
+
+    const { user } = useAuth();  //Tài khoản người sử dụng
 
     const getButtonAppearance = (buttonIndex: number) => {
         if (activeIndex === buttonIndex) return "filled";
@@ -97,23 +99,23 @@ export default function SavedScreen() {
         };
         if (applicationProperties)
             return getPropertiesFlatList(applicationProperties);
-        return(
+        return (
             <>
-                    <LottieView
-                        autoPlay
-                        style={styles.lottie}
-                        source={require("../../assets/lotties/Applications.json")}
+                <LottieView
+                    autoPlay
+                    style={styles.lottie}
+                    source={require("../../assets/lotties/Applications.json")}
+                />
+                {getBodyText(
+                    "Check the status of your rental applications here",
+                    "Any properties that you have applied to will show here"
+                )}
+                {!user && (
+                    <SignUpAndSignInButtons
+                        style={styles.signInAndSignUpButtonsContainer}
                     />
-                    {getBodyText(
-                        "Check the status of your rental applications here",
-                        "Any properties that you have applied to will show here"
-                    )}
-                    {!user && (
-                        <SignUpAndSignInButtons
-                            style={styles.signInAndSignUpButtonsContainer}
-                        />
-                    )}
-                </>
+                )}
+            </>
         );
     };
 

@@ -24,6 +24,7 @@
     "expo-linking": "~6.2.2",
     "expo-location": "~16.5.5",
     "expo-router": "~3.4.7",
+    "expo-secure-store": "^13.0.1",
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",

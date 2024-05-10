@@ -6,9 +6,10 @@ import { Screen } from "@/components/Screen";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
 import { theme } from "@/theme";
 import { ButtonList } from "@/components/ButtonList";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AccountScreen() {
-    const user = false;
+    const {user, logout} = useAuth();
     const navigation = useNavigation();
 
     const firstSignOutButtons = [
@@ -92,10 +93,10 @@ export default function AccountScreen() {
                     {user ? (
                         <>
                             <Text style={styles.userName} category={"h4"}>
-                                Welcome, User's FirstName
+                            Welcome{user.firstName ? `, ${user.firstName}` : ""}
                             </Text>
                             <Text style={styles.email} category={"h6"}>
-                                user@example.com
+                                {user.email}
                             </Text>
                         </>
                     ) : (
@@ -134,7 +135,7 @@ export default function AccountScreen() {
                         <Button
                             appearance={"ghost"}
                             style={styles.button}
-                            onPress={() => console.log("log users out")}
+                            onPress={logout}
                         >
                             Sign Out
                         </Button>
