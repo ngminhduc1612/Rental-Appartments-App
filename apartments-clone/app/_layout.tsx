@@ -81,6 +81,7 @@ function RootLayoutNav() {
         <Stack.Screen name="resetPasswordScreen" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="signInScreen" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="signUpScreen" options={{ headerShown: false, presentation: 'modal' }} />
+        <Stack.Screen name="propertyDeitalsScreen" options={{ headerShown: false, presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );

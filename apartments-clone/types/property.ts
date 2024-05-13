@@ -1,3 +1,6 @@
+import { Apartment } from "./apartment";
+import { Review } from "./review";
+
 export type Property = {
     id: number;
     images: string[];
@@ -13,4 +16,23 @@ export type Property = {
     tags: string[];
     lat: number;
     lng: number;
-}
+    about: string;
+    phoneNumber: string;
+    website: string;
+    dogsAllowed: boolean;
+    dogLimit: Number;
+    dogDetails: string;
+    dogNeuterd: boolean;
+    dogDeclawed: string;
+    dogInterView?: boolean;
+    catsAllowed: boolean;
+    catDetails: string;
+    catLimit: number;
+    carNeutered: boolean;
+    catDeclawed: boolean;
+    catInterview?: boolean;
+    stars: number;
+    reviews: Review[];
+    features?: string[];
+    apartments?: Apartment[];
+};

@@ -99,14 +99,14 @@ export const Map = ({
         }, 100)
 
         setTimeout(() => {
-           const newRegion: Region = {
+            const newRegion: Region = {
                 latitude: properties[index].lat,
                 latitudeDelta: region?.latitudeDelta ? region.latitudeDelta : 0.4,
                 longitude: properties[index].lng,
                 longitudeDelta: region?.longitudeDelta ? region.longitudeDelta : 0.4,
-           }
+            }
 
-           setRegion(newRegion);
+            setRegion(newRegion);
         }, 600)
 
         setActiveIndex(index);
@@ -167,7 +167,14 @@ export const Map = ({
                                 size={24}
                             />
                         </TouchableOpacity>}
-                    <Card property={properties[activeIndex]} style={styles.card} />
+                    <Card
+                        property={properties[activeIndex]}
+                        style={styles.card}
+                        onPress={() =>
+                            navigation.navigate("propertyDeitalsScreen", {
+                                propertyID: properties[activeIndex].id
+                            })}
+                    />
                 </>
             )}
             {showSearchAreaButton && activeIndex === -1 && (

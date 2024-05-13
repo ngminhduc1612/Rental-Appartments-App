@@ -1,10 +1,23 @@
-import { FlatList, Pressable, Image , StyleSheet} from "react-native";
+import { FlatList, Pressable, Image, StyleSheet, ImageStyle, View } from "react-native";
+import { Text } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
 
 import { WIDTH } from "../constants";
 
-export const ImageCarousel = ({images}: { images: string[]}) => {
+export const ImageCarousel = ({
+    images,
+    onImagePress,
+    chevronsShown,
+    indexShown,
+    imageStyle,
+}: {
+    images: string[];
+    onImagePress?: () => void;
+    chevronsShown?: boolean;
+    indexShown?: boolean;
+    imageStyle?: ImageStyle;
+}) => {
     const flatListRef = useRef<FlatList | null>(null);
     const viewConFig = { viewAreaCoveragePercentThreshold: 95 };
     const [activeIndex, setActiveIndex] = useState(0);
@@ -19,7 +32,7 @@ export const ImageCarousel = ({images}: { images: string[]}) => {
             return flatListRef.current?.scrollToIndex({
                 animated: false,
                 index: images.length - 1,
-        }); 
+            });
 
         flatListRef.current?.scrollToIndex({
             index: activeIndex - 1,
@@ -31,7 +44,7 @@ export const ImageCarousel = ({images}: { images: string[]}) => {
             return flatListRef.current?.scrollToIndex({
                 animated: false,
                 index: 0,
-        }); 
+            });
 
         flatListRef.current?.scrollToIndex({
             index: activeIndex + 1,
@@ -39,7 +52,7 @@ export const ImageCarousel = ({images}: { images: string[]}) => {
     };
     return (
         <>
-        <FlatList
+            <FlatList
                 ref={(ref) => (flatListRef.current = ref)}
                 data={images}
                 horizontal
@@ -49,35 +62,49 @@ export const ImageCarousel = ({images}: { images: string[]}) => {
                 viewabilityConfig={viewConFig}
                 onViewableItemsChanged={onViewRef.current}
                 renderItem={({ item }) => (
-                    <Image
-                        source={{ uri: item }}
-                        style={styles.image}
-                    />
+                    <Pressable onPress={onImagePress}>
+                        <Image
+                            source={{ uri: item }}
+                            style={[styles.image, imageStyle]}
+                        />
+                    </Pressable>
                 )}
                 keyExtractor={(item) => item}
             />
-            <Pressable
-                style={[
-                    styles.chevron,
-                    { 
-                        left: 5 
-                    },
-                ]}
-                onPress={handlePressLeft}
-            >
-                <MaterialCommunityIcons name="chevron-left" color="white" size={45} />
-            </Pressable>
-            <Pressable
-                style={[
-                    styles.chevron,
-                    { 
-                        right: 5 
-                    },
-                ]}
-                onPress={handlePressRight}
-            >
-                <MaterialCommunityIcons name="chevron-right" color="white" size={45} />
-            </Pressable>
+            {chevronsShown && (
+                <>
+                    <Pressable
+                        style={[
+                            styles.chevron,
+                            {
+                                left: 5
+                            },
+                        ]}
+                        onPress={handlePressLeft}
+                    >
+                        <MaterialCommunityIcons name="chevron-left" color="white" size={45} />
+                    </Pressable>
+                    <Pressable
+                        style={[
+                            styles.chevron,
+                            {
+                                right: 5
+                            },
+                        ]}
+                        onPress={handlePressRight}
+                    >
+                        <MaterialCommunityIcons name="chevron-right" color="white" size={45} />
+                    </Pressable>
+                </>
+            )}
+
+            {indexShown && (
+                <View style={styles.index}>
+                    <Text category={"c2"} style={styles.indexText}>
+                        {activeIndex + 1} of {images.length} photos
+                    </Text>
+                </View>
+            )}
         </>
     )
 };
@@ -90,7 +117,19 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 5,
     },
     chevron: {
-        position: "absolute", 
+        position: "absolute",
         top: 95,
-    }
+    },
+    index: {
+        position: "absolute",
+        top: 20,
+        left: 15,
+        backgroundColor: "rgba(0, 0, 0, 0.7)", // use this to give the black background opacity but not the text
+        paddingVertical: 3,
+        paddingHorizontal: 10,
+        borderRadius: 30,
+    },
+    indexText: {
+        color: "#fff"
+    },
 })

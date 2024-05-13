@@ -5,6 +5,8 @@ import { Formik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useMutation } from "react-query";
 import { useNavigation } from "@react-navigation/native";
+import * as Facebook from "expo-auth-session/providers/facebook";
+
 
 import { Screen } from "../components/Screen";
 import { ModalHeader } from "../components/ModalHeader";
@@ -20,6 +22,11 @@ import { Loading } from "@/components/Loading";
 export default function SignUpScreen() {
     const navigation = useNavigation();
     const { login } = useAuth();
+
+    const [___, ____, fbPromptAsync] = Facebook.useAuthRequest({
+        clientId: "1221973065450344",
+        redirectUri: "https://auth.expo.io/@ducnguyen161/apartments-clone",
+    });
 
     const nativeRegister = useMutation(
         async (values: {
@@ -41,7 +48,18 @@ export default function SignUpScreen() {
         }
     );
 
-    if (nativeRegister.isLoading) return <Loading/>
+    const facebookRegister = useMutation(async () => {
+        const response = await fbPromptAsync();
+    
+        if (response.type === "success") {
+            const { access_token } = response.params;
+            console.log("Access Token:", access_token);
+        } else {
+            console.error("Facebook authentication failed:", response);
+        }
+    });
+
+    if (nativeRegister.isLoading) return <Loading />
 
 
     return (
@@ -173,7 +191,7 @@ export default function SignUpScreen() {
                                     <FacebookButton
                                         text="Sign up with Facebook"
                                         style={styles.button}
-                                        onPress={() => console.log("Sign up by Facebook")}
+                                        onPress={() => facebookRegister.mutate()}
                                     />
                                     <AppleButton
                                         type="sign-up"

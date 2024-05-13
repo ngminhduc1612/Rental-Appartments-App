@@ -14,7 +14,7 @@ export const properties: Property[] = [
         name: "The Duly",
         street: "London 35th St",
         city: "Miami",
-        state: "Floria",
+        state: "Ha Noi",
         zip: 33137,
         tags: ["Parking"],
         lat: 21.005667164666153, 

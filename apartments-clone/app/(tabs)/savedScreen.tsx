@@ -2,6 +2,7 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
 import { useState } from "react";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Screen } from "@/components/Screen";
 import { Row } from "@/components/Row";
@@ -14,9 +15,10 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function SavedScreen() {
     const [activeIndex, setActiveIndex] = useState<number>(0); // Đánh dấu button nào đang active, thay đổi màu
-    const likedProperties = undefined;
+    const likedProperties = properties;
     const contactedProperties = undefined;
     const applicationProperties = undefined;
+    const navigation = useNavigation();
 
     const { user } = useAuth();  //Tài khoản người sử dụng
 
@@ -48,7 +50,7 @@ export default function SavedScreen() {
                 showsVerticalScrollIndicator={false}
                 data={properties}
                 style={{ marginTop: 10 }}
-                renderItem={({ item }) => <Card property={item} style={styles.card} />}
+                renderItem={({ item }) => <Card property={item} style={styles.card} onPress={() => navigation.navigate("propertyDeitalsScreen", { propertyID: item.id })} />}
                 keyExtractor={(item) => item.id.toString()}
             />
         );

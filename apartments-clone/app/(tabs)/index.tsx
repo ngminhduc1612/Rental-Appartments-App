@@ -1,6 +1,7 @@
 import { Animated, StyleSheet, View } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Screen } from "@/components/Screen";
 import { Card } from "@/components/Card";
@@ -23,6 +24,7 @@ export default function SearchScreen(
     const mapRef = useRef<MapView | null>(null)
     const [properties, setProperties] = useState<Property[]>([]); //Hiển thị mark ở vùng đó hay không
     const [location, setLocation] = useState<string | undefined>(undefined);
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (route && route.params) {
@@ -97,7 +99,7 @@ export default function SearchScreen(
                                 keyExtractor={(item) => item.id.toString()}
                                 showsVerticalScrollIndicator={false}
                                 renderItem={({ item }) => (
-                                    <Card style={{ marginVertical: 5 }} property={item} />
+                                    <Card style={{ marginVertical: 5 }} property={item} onPress={() => navigation.navigate("propertyDeitalsScreen", { propertyID: item.id })}/>
                                 )}
                             />
                         ) : (
