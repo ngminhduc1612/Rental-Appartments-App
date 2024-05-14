@@ -8,6 +8,8 @@ import { ImageCarousel } from "@/components/ImageCarousel";
 import { PropertyHeaderSection } from "@/components/propertyDetailsSections/propertyHeaderSection";
 import { theme } from "@/theme";
 import { PricingAndFloorPlanSection } from "@/components/propertyDetailsSections/PricingAndFloorPlanSection";
+import { AboutSection } from "@/components/propertyDetailsSections/AboutSection";
+import { ContactSection } from "@/components/propertyDetailsSections/ContactSection";
 
 export default function PropertyDetailsScreen(
     // { route }: { route: { params: { propertyId: number } } }
@@ -30,6 +32,11 @@ export default function PropertyDetailsScreen(
                             <PropertyHeaderSection property={item} />
                             <Divider style={styles.divider} />
                             <PricingAndFloorPlanSection property={item} />
+                            <Divider style={styles.divider} />
+                            <AboutSection property={item} />
+                            <Divider style={styles.divider} />
+                            <ContactSection property={item} />
+                            <Divider style={styles.divider} />
                         </View>
                     </>
                 )}

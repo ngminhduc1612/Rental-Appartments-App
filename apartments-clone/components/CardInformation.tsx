@@ -1,11 +1,15 @@
-import { Property } from "@/types/property"
 import { View, StyleSheet } from "react-native"
-import { Row } from "./Row";
-import { Text, Button } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text, Button } from "@ui-kitten/components";
+import { useNavigation } from "@react-navigation/native";
+
+import { Row } from "./Row";
+import { Property } from "@/types/property"
 import { theme } from '../theme'
+import { callPhoneNumber } from "@/utils/callPhoneNumber";
 
 export const CardInformation = ({ property }: { property: Property }) => {
+    const navigation = useNavigation();
     return <View
         style={styles.informationContainer}
     >
@@ -14,7 +18,8 @@ export const CardInformation = ({ property }: { property: Property }) => {
             <MaterialCommunityIcons name='heart-outline' color={theme["color-primary-500"]} size={24} />
         </Row>
         <Text category={"c1"}>
-            {property.bedroomLow} - {property.bedroomHigh} Beds
+            {property.bedroomLow === 0 ? "Studio" : property.bedroomLow} -{" "} 
+            {property.bedroomHigh} Beds
         </Text>
         <Text category={"c1"} style={styles.defaultMarginTop}>
             {property.name}
@@ -45,14 +50,14 @@ export const CardInformation = ({ property }: { property: Property }) => {
                     styles.button,
                 ]}
                 size="small"
-                onPress={() => console.log("email the item manager")}
+                onPress={() => navigation.navigate("messageScreen", {propertyID: property.id})}
             >
                 Email
             </Button>
             <Button
                 style={styles.button}
                 size="small"
-                onPress={() => console.log("call the property manager")}
+                onPress={() => callPhoneNumber(property.phoneNumber)}
             >
                 Call
             </Button>
