@@ -7,6 +7,7 @@ import { Screen } from "@/components/Screen";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { PropertyHeaderSection } from "@/components/propertyDetailsSections/propertyHeaderSection";
 import { theme } from "@/theme";
+import { PricingAndFloorPlanSection } from "@/components/propertyDetailsSections/PricingAndFloorPlanSection";
 
 export default function PropertyDetailsScreen(
     // { route }: { route: { params: { propertyId: number } } }
@@ -23,11 +24,12 @@ export default function PropertyDetailsScreen(
                 renderItem={({ item }) => (
                     <>
                         {item.images ? (
-                            <ImageCarousel images={item.images} indexShown imageStyle={styles.image}/>
+                            <ImageCarousel images={item.images} indexShown imageStyle={styles.image} />
                         ) : null}
                         <View style={styles.contentContainer}>
                             <PropertyHeaderSection property={item} />
-                            <Divider style={styles.divider}/>
+                            <Divider style={styles.divider} />
+                            <PricingAndFloorPlanSection property={item} />
                         </View>
                     </>
                 )}
