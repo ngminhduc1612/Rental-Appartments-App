@@ -119,6 +119,26 @@ export const properties: Property[] = [
     ],
     phoneNumber: "0912316767",
     website: "www.helloasda.com",
+    pets: [
+      {
+        type: "Dog",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+      {
+        type: "Cat",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+    ],
   },
   {
     id: 3,
@@ -219,6 +239,17 @@ export const properties: Property[] = [
     ],
     phoneNumber: "34532454235",
     website: "www.abcwewe.com",
+    pets: [
+      {
+        type: "Dog",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+    ],
   },
   {
     id: 4,
@@ -316,6 +347,30 @@ export const properties: Property[] = [
     ],
     phoneNumber: "0912316767",
     website: "www.asdadsaa.com",
+    pets: [
+      {
+        type: "Dog",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+      {
+        type: "Cat",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+    ],
+    scores: [
+      { type: "Walk", description: "Very Walkable", score: 73 },
+      { type: "Bike", description: "Very Bikeable", score: 72 },
+    ],
   },
   {
     id: 5,
@@ -416,6 +471,30 @@ export const properties: Property[] = [
     ],
     phoneNumber: "0912345678",
     website: "www.google.com",
+    pets: [
+      {
+        type: "Dog",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+      {
+        type: "Cat",
+        allowed: true,
+        details: "Some breed restrictions",
+        limit: 2,
+        fee: 25,
+        deposit: 100,
+        rent: 50,
+      },
+    ],
+    scores: [
+      { type: "Walk", description: "Very Walkable", score: 73 },
+      { type: "Bike", description: "Very Bikeable", score: 72 },
+    ],
   }
 ]
 

@@ -1,5 +1,7 @@
 import { Apartment } from "./apartment";
+import { Pet } from "./pet";
 import { Review } from "./review";
+import { Score } from "./score";
 
 export type Property = {
     id: number;
@@ -19,20 +21,12 @@ export type Property = {
     about: string;
     phoneNumber: string;
     website: string;
-    dogsAllowed: boolean;
-    dogLimit: Number;
-    dogDetails: string;
-    dogNeuterd: boolean;
-    dogDeclawed: string;
-    dogInterView?: boolean;
-    catsAllowed: boolean;
-    catDetails: string;
-    catLimit: number;
-    carNeutered: boolean;
-    catDeclawed: boolean;
-    catInterview?: boolean;
+    pets: Pet[];
     stars: number;
     reviews: Review[];
     features?: string[];
     apartments?: Apartment[];
+    fee?: string[];
+    detail?: string[],
+    scores?: Score[],
 };

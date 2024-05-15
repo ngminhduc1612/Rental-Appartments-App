@@ -10,6 +10,9 @@ import { theme } from "@/theme";
 import { PricingAndFloorPlanSection } from "@/components/propertyDetailsSections/PricingAndFloorPlanSection";
 import { AboutSection } from "@/components/propertyDetailsSections/AboutSection";
 import { ContactSection } from "@/components/propertyDetailsSections/ContactSection";
+import { AmenitiesSection } from "@/components/propertyDetailsSections/AmenitiesSection";
+import { LeaseAndFeesSection } from "@/components/propertyDetailsSections/LeaseAndFeesSection";
+import { LocationSection } from "@/components/propertyDetailsSections/LocationSection";
 
 export default function PropertyDetailsScreen(
     // { route }: { route: { params: { propertyId: number } } }
@@ -37,6 +40,11 @@ export default function PropertyDetailsScreen(
                             <Divider style={styles.divider} />
                             <ContactSection property={item} />
                             <Divider style={styles.divider} />
+                            <AmenitiesSection property={item} />
+                            <Divider style={styles.divider} />
+                            <LeaseAndFeesSection property={item} />
+                            <Divider style={styles.divider} />
+                            <LocationSection property={item} />
                         </View>
                     </>
                 )}
