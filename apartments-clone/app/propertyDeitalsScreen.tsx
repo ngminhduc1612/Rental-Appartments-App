@@ -13,6 +13,7 @@ import { ContactSection } from "@/components/propertyDetailsSections/ContactSect
 import { AmenitiesSection } from "@/components/propertyDetailsSections/AmenitiesSection";
 import { LeaseAndFeesSection } from "@/components/propertyDetailsSections/LeaseAndFeesSection";
 import { LocationSection } from "@/components/propertyDetailsSections/LocationSection";
+import { ReviewSection } from "@/components/propertyDetailsSections/ReviewSection";
 
 export default function PropertyDetailsScreen(
     // { route }: { route: { params: { propertyId: number } } }
@@ -45,6 +46,9 @@ export default function PropertyDetailsScreen(
                             <LeaseAndFeesSection property={item} />
                             <Divider style={styles.divider} />
                             <LocationSection property={item} />
+                            <Divider style={styles.divider} />
+                            <ReviewSection property={item} />
+                            <Divider style={styles.divider} />
                         </View>
                     </>
                 )}

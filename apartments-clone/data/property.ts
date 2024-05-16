@@ -7,6 +7,8 @@ export const properties: Property[] = [
       "https://visaho.vn/upload_images/images/2022/04/01/dien-tich-can-ho-chung-cu-2-min.jpg",
       "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
     ],
+    about:
+      "At 7 West, urban apartment-life decadence extends beyond your front door. Elevate your lifestyle with gracious concierge services including packages and dry cleaning delivered straight to your door. Enjoy the fun and frequent resident activities like our weekly “Wake Up with Weidner” that includes a free breakfast and “Pizza Night.” Grab a slice, get to know your neighbors and make new friends. Get healthy in our state-of-the-art fitness center and achieve enlightenment in our calming yoga studio. Take advantage of the gorgeous resident lounge complete with kitchen and free wifi to relax, work and study. Challenge your neighbor to a billiards match in the game room, and entertain friends and family on the rooftop terrace or reserve the clubhouse for special occasions. You can also rest assured with controlled access to the building, an underground heated parking garage and a courtesy security patrol. We have furnished apartments available, and we’re a pet-friendly apartment community, complete with a “Yappy Hour” for residents and their dogs to mingle and make friends.",
     rentLow: 3750,
     rentHigh: 31054,
     bedroomLow: 1,
@@ -21,9 +23,30 @@ export const properties: Property[] = [
     lng: 105.84725432718425,
     phoneNumber: "09434637463",
     website: "www.adias.com",
+    fee: [
+      {
+        heading: "Parking",
+        body: ["Others"]
+      },
+      {
+        heading: "Electric",
+        body: [
+          "Free",
+        ],
+      },
+      {
+        heading: "Water",
+        body: [
+          "Not Free",
+        ],
+      },
+    ],
+    stars: 0,
   },
   {
     id: 2,
+    about:
+      "At 7 West, urban apartment-life decadence extends beyond your front door. Elevate your lifestyle with gracious concierge services including packages and dry cleaning delivered straight to your door. Enjoy the fun and frequent resident activities like our weekly “Wake Up with Weidner” that includes a free breakfast and “Pizza Night.” Grab a slice, get to know your neighbors and make new friends. Get healthy in our state-of-the-art fitness center and achieve enlightenment in our calming yoga studio. Take advantage of the gorgeous resident lounge complete with kitchen and free wifi to relax, work and study. Challenge your neighbor to a billiards match in the game room, and entertain friends and family on the rooftop terrace or reserve the clubhouse for special occasions. You can also rest assured with controlled access to the building, an underground heated parking garage and a courtesy security patrol. We have furnished apartments available, and we’re a pet-friendly apartment community, complete with a “Yappy Hour” for residents and their dogs to mingle and make friends.",
     images: [
       "https://www.hoteljob.vn/uploads/images/19-03-29-13/khu-nghi-duong-co-canh-quan-dep-nam-2018-04.png",
       "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
@@ -139,6 +162,49 @@ export const properties: Property[] = [
         rent: 50,
       },
     ],
+    fee: [
+      {
+        heading: "Parking",
+        body: ["Others"]
+      },
+      {
+        heading: "Electric",
+        body: [
+          "Free",
+        ],
+      },
+      {
+        heading: "Water",
+        body: [
+          "Not Free",
+        ],
+      },
+    ],
+    stars: 3.5,
+    reviews: [
+      {
+        body: "Kind of feels like living in a hotel. That's very nice in some ways, but a bit cold at the same time.",
+        CreatedAt: "2022-05-09T21:56:18.422866-05:00",
+        ID: 1,
+        propertyID: 1,
+        stars: 3,
+        title: "Neither here nor there",
+        userID: 1,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+      {
+        body: "I really appreciate the amenities and particularly how responsive maintenance is when they break down.",
+        CreatedAt: "2022-07-09T21:56:18.422866-05:00",
+        ID: 2,
+        propertyID: 1,
+        stars: 4,
+        title: "I really appreciate",
+        userID: 2,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+    ],
   },
   {
     id: 3,
@@ -250,6 +316,25 @@ export const properties: Property[] = [
         rent: 50,
       },
     ],
+    fee: [
+      {
+        heading: "Parking",
+        body: ["Others"]
+      },
+      {
+        heading: "Electric",
+        body: [
+          "Free",
+        ],
+      },
+      {
+        heading: "Water",
+        body: [
+          "Not Free",
+        ],
+      },
+    ],
+    stars: 0,
   },
   {
     id: 4,
@@ -367,9 +452,52 @@ export const properties: Property[] = [
         rent: 50,
       },
     ],
+    fee: [
+      {
+        heading: "Parking",
+        body: ["Others"]
+      },
+      {
+        heading: "Electric",
+        body: [
+          "Free",
+        ],
+      },
+      {
+        heading: "Water",
+        body: [
+          "Not Free",
+        ],
+      },
+    ],
     scores: [
       { type: "Walk", description: "Very Walkable", score: 73 },
       { type: "Bike", description: "Very Bikeable", score: 72 },
+    ],
+    stars: 3.5,
+    reviews: [
+      {
+        body: "Kind of feels like living in a hotel. That's very nice in some ways, but a bit cold at the same time.",
+        CreatedAt: "2022-05-09T21:56:18.422866-05:00",
+        ID: 1,
+        propertyID: 1,
+        stars: 3,
+        title: "Neither here nor there",
+        userID: 1,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+      {
+        body: "Căn hộ vô cùng tuyệt vời. Minh rất thích nó",
+        CreatedAt: "2022-07-09T21:56:18.422866-05:00",
+        ID: 2,
+        propertyID: 1,
+        stars: 4,
+        title: "Rất thích view của căn hộ này",
+        userID: 2,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
     ],
   },
   {
@@ -491,9 +619,74 @@ export const properties: Property[] = [
         rent: 50,
       },
     ],
+    fee: [
+      {
+        heading: "Parking",
+        body: ["Others"]
+      },
+      {
+        heading: "Electric",
+        body: [
+          "Free",
+        ],
+      },
+      {
+        heading: "Water",
+        body: [
+          "Not Free",
+        ],
+      },
+    ],
     scores: [
       { type: "Walk", description: "Very Walkable", score: 73 },
       { type: "Bike", description: "Very Bikeable", score: 72 },
+    ],
+    stars: 4.2,
+    reviews: [
+      {
+        body: "The building itself was great. Surrounding streets, however, were constantly loud, torn up, inaccessible, dangerous, and full of construction debris essentially for the entire two plus years I lived there. Constant sirens, thumping, vibrations, jackhammers, etc. was intolerable. Weekend evenings sirens were non-stop.",
+        CreatedAt: "2022-05-09T21:56:18.422866-05:00",
+        ID: 1,
+        propertyID: 1,
+        stars: 3,
+        title: "Neither here nor there",
+        userID: 1,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+      {
+        body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Condimentum id venenatis a condimentum vitae sapien pellentesque. Sed ullamcorper morbi tincidunt ornare massa eget egestas. Porta non pulvinar neque laoreet. Egestas dui id ornare arcu odio ut sem. Ut eu sem integer vitae. Lorem sed risus ultricies tristique nulla. Neque viverra justo nec ultrices dui sapien eget. Tempus quam pellentesque nec nam aliquam. Mattis pellentesque id nibh tortor id aliquet. Egestas integer eget aliquet nibh praesent tristique magna. Nisl vel pretium lectus quam. Semper feugiat nibh sed pulvinar proin gravida hendrerit. Gravida quis blandit turpis cursus in hac habitasse. Et sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. At lectus urna duis convallis convallis tellus id interdum.Lorem donec massa sapien faucibus et molestie. Enim nunc faucibus a pellentesque. Mus mauris vitae ultricies leo integer malesuada. Mi tempus imperdiet nulla malesuada pellentesque. Massa eget egestas purus viverra accumsan in nisl nisi scelerisque. Non consectetur a erat nam. Venenatis cras sed felis eget velit aliquet sagittis. Eget lorem dolor sed viverra ipsum nunc. Augue neque gravida in fermentum et sollicitudin ac orci phasellus. Sed euismod nisi porta lorem mollis aliquam ut porttitor. Dolor sit amet consectetur adipiscing elit duis tristique sollicitudin nibh. Blandit aliquam etiam erat velit. Venenatis a condimentum vitae sapien pellentesque habitant morbi tristique senectus. Vel eros donec ac odio tempor orci dapibus ultrices in.",
+        CreatedAt: "2022-05-21T21:56:18.422866-05:00",
+        ID: 2,
+        propertyID: 1,
+        stars: 5,
+        title: "Staff is great",
+        userID: 2,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+      {
+        body: "Downtown has crime concerns, and it is expensive because of that, but it's a good place.",
+        CreatedAt: "2022-06-09T21:56:18.422866-05:00",
+        ID: 3,
+        propertyID: 1,
+        stars: 5,
+        title: "Downtown has crime",
+        userID: 3,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
+      {
+        body: "I really appreciate the amenities and particularly how responsive maintenance is when they break down.",
+        CreatedAt: "2022-07-09T21:56:18.422866-05:00",
+        ID: 2,
+        propertyID: 1,
+        stars: 4,
+        title: "I really appreciate",
+        userID: 2,
+        DeletedAt: null,
+        UpdatedAt: null,
+      },
     ],
   }
 ]

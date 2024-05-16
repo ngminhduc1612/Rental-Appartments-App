@@ -40,36 +40,37 @@ export const LeaseAndFeesSection = ({ property }: { property: Property }) => {
                 </Text>
             </Row>
             <FlatList
-                    style={styles.defaultMarginVertical}
-                    horizontal
-                    data={[
-                        {
-                            heading: "Parking",
-                            body: ["Others"]
-                        },
-                        {
-                            heading: "Electric",
-                            body: [
-                                "Free",
-                            ],
-                        },
-                        {
-                            heading: "Water",
-                            body: [
-                                "Not Free",
-                            ],
-                        },
-                    ]}
-                    renderItem={({ item }) => (
-                        <GeneralTextCard 
-                            heading={item.heading}
-                            body={item.body}
-                            style={styles.textCard}
-                        />
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.heading}
-                />
+                style={styles.defaultMarginVertical}
+                horizontal
+                data={[
+                    {
+                        heading: "Parking",
+                        body: ["Others"]
+                    },
+                    {
+                        heading: "Electric",
+                        body: [
+                            "Free",
+                        ],
+                    },
+                    {
+                        heading: "Water",
+                        body: [
+                            "Not Free",
+                        ],
+                    },
+                ]
+                }
+                renderItem={({ item }) => (
+                    <GeneralTextCard
+                        heading={item.heading}
+                        body={item.body}
+                        style={styles.textCard}
+                    />
+                )}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.heading}
+            />
 
             <Row style={[styles.row, { paddingTop: 10 }]}>
                 <MaterialIcons name="list-alt" color={"black"} size={24} />
@@ -77,33 +78,33 @@ export const LeaseAndFeesSection = ({ property }: { property: Property }) => {
                     Details
                 </Text>
             </Row>
-                <FlatList
-                    style={styles.defaultMarginVertical}
-                    horizontal
-                    data={[
-                        {
-                            heading: "lease options",
-                            body: ["12 months"]
-                        },
-                        {
-                            heading: "proderty information",
-                            body: [
-                                "Built in 2017",
-                                "Apartment Community",
-                                "242 units/5 stories",
-                            ],
-                        },
-                    ]}
-                    renderItem={({ item }) => (
-                        <GeneralTextCard 
-                            heading={item.heading}
-                            body={item.body}
-                            style={styles.textCard}
-                        />
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.heading}
-                />
+            <FlatList
+                style={styles.defaultMarginVertical}
+                horizontal
+                data={[
+                    {
+                        heading: "lease options",
+                        body: ["12 months"]
+                    },
+                    {
+                        heading: "proderty information",
+                        body: [
+                            "Built in 2017",
+                            "Apartment Community",
+                            "242 units/5 stories",
+                        ],
+                    },
+                ]}
+                renderItem={({ item }) => (
+                    <GeneralTextCard
+                        heading={item.heading}
+                        body={item.body}
+                        style={styles.textCard}
+                    />
+                )}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.heading}
+            />
         </>
     )
 };

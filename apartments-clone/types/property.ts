@@ -1,4 +1,5 @@
 import { Apartment } from "./apartment";
+import { generalType } from "./generalType";
 import { Pet } from "./pet";
 import { Review } from "./review";
 import { Score } from "./score";
@@ -21,12 +22,12 @@ export type Property = {
     about: string;
     phoneNumber: string;
     website: string;
-    pets: Pet[];
+    pets?: Pet[];
     stars: number;
-    reviews: Review[];
+    reviews?: Review[];
     features?: string[];
     apartments?: Apartment[];
-    fee?: string[];
-    detail?: string[],
-    scores?: Score[],
+    fee?: generalType[];
+    detail?: generalType[];
+    scores?: Score[];
 };
