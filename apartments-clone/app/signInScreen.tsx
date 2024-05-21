@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Text, Input, Button } from "@ui-kitten/components";
 import * as yup from "yup";
@@ -30,111 +30,113 @@ export default function SignInScreen() {
         }
     })
 
-    if (nativeLogin.isLoading) return <Loading/>;
+    if (nativeLogin.isLoading) return <Loading />;
 
     return (
         <KeyboardAwareScrollView bounces={false}>
-            <Screen style={styles.container}>
+            <Screen>
                 <ModalHeader text="DH Appartments" XShown />
-                <Text
-                    category={"h5"} style={styles.header}
-                >
-                    Sign In
-                </Text>
-                <Formik
-                    initialValues={{
-                        email: "",
-                        password: "",
-                    }}
-                    validationSchema={yup.object().shape({
-                        email: yup.string().email().required("Your email is required."),
-                        password: yup.string().required("A password is required."),
-                    })}
-                    onSubmit={(values) => {
-                        nativeLogin.mutate(values);
-                    }}
-                >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleSubmit,
-                        setFieldTouched,
-                    }) => {
-                        return (
-                            <>
-                                <Input
-                                    style={styles.input}
-                                    value={values.email}
-                                    onChangeText={handleChange("email")}
-                                    placeholder="Your Email Address"
-                                    autoCapitalize="none"
-                                    keyboardType="email-address"
-                                    textContentType="emailAddress"
-                                    autoComplete="email"
-                                    label="Email"
-                                    onBlur={() => setFieldTouched("email")}
-                                    caption={
-                                        touched.email && errors.email ? errors.email : undefined
-                                    }
-                                    status={
-                                        touched.email && errors.email ? "danger" : "basic"
-                                    }
-                                />
-                                <PasswordInput
-                                    style={styles.input}
-                                    value={values.password}
-                                    onChangeText={handleChange("password")}
-                                    placeholder="Your Password"
-                                    label="Password"
-                                    onBlur={() => setFieldTouched("password")}
-                                    caption={
-                                        touched.password && errors.password
-                                            ? errors.password
-                                            : undefined
-                                    }
-                                    status={
-                                        touched.password && errors.password ? "danger" : "basic"
-                                    }
-                                />
-                                <TouchableOpacity
-                                    style={styles.forgotPasswordContainer}
-                                    onPress={() => navigation.navigate("forgotPasswordScreen")}
-                                >
-                                    <Text category={"c1"} status={"info"}>
-                                        Forgot Your Password?
-                                    </Text>
-                                </TouchableOpacity>
+                <View style={styles.container}>
+                    <Text
+                        category={"h5"} style={styles.header}
+                    >
+                        Sign In
+                    </Text>
+                    <Formik
+                        initialValues={{
+                            email: "",
+                            password: "",
+                        }}
+                        validationSchema={yup.object().shape({
+                            email: yup.string().email().required("Your email is required."),
+                            password: yup.string().required("A password is required."),
+                        })}
+                        onSubmit={(values) => {
+                            nativeLogin.mutate(values);
+                        }}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleChange,
+                            handleSubmit,
+                            setFieldTouched,
+                        }) => {
+                            return (
+                                <>
+                                    <Input
+                                        style={styles.input}
+                                        value={values.email}
+                                        onChangeText={handleChange("email")}
+                                        placeholder="Your Email Address"
+                                        autoCapitalize="none"
+                                        keyboardType="email-address"
+                                        textContentType="emailAddress"
+                                        autoComplete="email"
+                                        label="Email"
+                                        onBlur={() => setFieldTouched("email")}
+                                        caption={
+                                            touched.email && errors.email ? errors.email : undefined
+                                        }
+                                        status={
+                                            touched.email && errors.email ? "danger" : "basic"
+                                        }
+                                    />
+                                    <PasswordInput
+                                        style={styles.input}
+                                        value={values.password}
+                                        onChangeText={handleChange("password")}
+                                        placeholder="Your Password"
+                                        label="Password"
+                                        onBlur={() => setFieldTouched("password")}
+                                        caption={
+                                            touched.password && errors.password
+                                                ? errors.password
+                                                : undefined
+                                        }
+                                        status={
+                                            touched.password && errors.password ? "danger" : "basic"
+                                        }
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.forgotPasswordContainer}
+                                        onPress={() => navigation.navigate("forgotPasswordScreen")}
+                                    >
+                                        <Text category={"c1"} status={"info"}>
+                                            Forgot Your Password?
+                                        </Text>
+                                    </TouchableOpacity>
 
-                                <Button
-                                    style={styles.signInButton}
-                                    onPress={() => handleSubmit()}
-                                >
-                                    Sign In
-                                </Button>
+                                    <Button
+                                        style={styles.signInButton}
+                                        onPress={() => handleSubmit()}
+                                    >
+                                        Sign In
+                                    </Button>
 
-                                <OrDivider style={styles.orContainer} />
+                                    <OrDivider style={styles.orContainer} />
 
-                                <GoogleButton
-                                    text="Continue with Google"
-                                    style={styles.button}
-                                    onPress={() => console.log("google login")}
-                                />
+                                    <GoogleButton
+                                        text="Continue with Google"
+                                        style={styles.button}
+                                        onPress={() => console.log("google login")}
+                                    />
 
-                                <FacebookButton
-                                    text="Continue with Facebook"
-                                    style={styles.button}
-                                    onPress={() => console.log("facebook login")}
-                                />
-                                <AppleButton
-                                    type="sign-in"
-                                    onPress={() => console.log("apple login")}
-                                />
-                            </>
-                        )
-                    }}
-                </Formik>
+                                    <FacebookButton
+                                        text="Continue with Facebook"
+                                        style={styles.button}
+                                        onPress={() => console.log("facebook login")}
+                                    />
+                                    <AppleButton
+                                        type="sign-in"
+                                        onPress={() => console.log("apple login")}
+                                    />
+                                </>
+                            )
+                        }}
+                    </Formik>
+                </View>
             </Screen>
         </KeyboardAwareScrollView>
     );
