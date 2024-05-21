@@ -9,7 +9,9 @@ import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 import { theme } from '../theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState, useEffect } from 'react';
-import * as SecureStore from "expo-secure-store"
+import * as SecureStore from "expo-secure-store";
+import * as Linking from 'expo-linking';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { AuthContext } from '@/context';
 import { User } from '@/types/user';
@@ -24,6 +26,14 @@ export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
+export const linking = {
+  prefixes: [Linking.createURL("/")],
+  config: {
+    screens: {
+      resetPasswordScreen: { path: "resetpassword/:token" },
+    },
+  },
+};
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -62,7 +72,9 @@ export default function RootLayout() {
     <AuthContext.Provider value={{ user, setUser }}>
       <QueryClientProvider client={queryClient}>
         <ApplicationProvider {...eva} theme={theme}>
-          <RootLayoutNav />
+          <NavigationContainer linking={linking} independent={true}>
+            <RootLayoutNav />
+          </NavigationContainer>
         </ApplicationProvider>
       </QueryClientProvider>
     </AuthContext.Provider>
@@ -73,17 +85,19 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="findLocationScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="forgotPasswordScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="resetPasswordScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="signInScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="signUpScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="propertyDeitalsScreen" options={{ headerShown: false, presentation: 'modal' }} />
-        <Stack.Screen name="messageScreen" options={{ headerShown: false, presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <NavigationContainer linking={linking} independent={true}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="findLocationScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="forgotPasswordScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="resetPasswordScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="signInScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="signUpScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="propertyDeitalsScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="messageScreen" options={{ headerShown: false, presentation: 'modal' }} />
+        </Stack>
+      </ThemeProvider>
+    </NavigationContainer>
   );
 }

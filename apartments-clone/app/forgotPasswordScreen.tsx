@@ -5,14 +5,36 @@ import { Formik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";   // Bàn phím hiển thị không che đi phần input
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { useMutation } from "react-query";
+import axios from "axios";
 
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
 import LottieView from "lottie-react-native";
+import { Loading } from "@/components/Loading";
+import { endpoints } from "@/constants";
 
 export default function ForgotPasswordScreen() {
-    const navigation = useNavigation();
     const [emailSent, setEmailSent] = useState(false);
+
+    const forgotPassword = useMutation(
+        async (email: string) => {
+            return axios.post(endpoints.forgotPassword, {
+                email
+            });
+        },
+        {
+            onSuccess(data) {
+                if (data.data.emailSent) setEmailSent(true);
+            },
+            onError(error: any) {
+                alert(error?.response.data.detail);
+            },
+        }
+    );
+
+    if (forgotPassword.isLoading) return <Loading />;
+
     return (
         <KeyboardAwareScrollView bounces={false}>
             <Screen style={styles.container}>
@@ -50,8 +72,7 @@ export default function ForgotPasswordScreen() {
                                 email: yup.string().email().required("Your email is required."),
                             })}
                             onSubmit={(values) => {
-                                console.log("submit to the server", values);
-                                setEmailSent(true);
+                                forgotPassword.mutate(values.email)
                             }}
                         >
                             {({

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kataras/iris/v12"
+	jsonWT "github.com/kataras/iris/v12/middleware/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,7 +36,7 @@ func Register(ctx iris.Context) {
 		return
 	}
 
-	hashedPassword, hashErr := hashAndHandleUserExists(userInput.Password)
+	hashedPassword, hashErr := hashAndSaltPassword(userInput.Password)
 	if hashErr != nil {
 		utils.CreateInternalServerError(ctx)
 		return
@@ -99,6 +100,93 @@ func Login(ctx iris.Context) {
 	})
 }
 
+func ForgotPassword(ctx iris.Context) {
+	var emailInput EmailRegisteredInput
+	err := ctx.ReadJSON(&emailInput)
+	if err != nil {
+		utils.HandleValidationErrors(err, ctx)
+		return
+	}
+
+	var user models.User
+	userExists, userExistsErr := getAndHandleUserExists(&user, emailInput.Email)
+
+	if userExistsErr != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	if !userExists {
+		utils.CreateError(iris.StatusUnauthorized, "Credentials Error", "Invalid email.", ctx)
+		return
+	}
+
+	if userExists {
+		if user.SocialLogin {
+			utils.CreateError(iris.StatusUnauthorized, "Credentials Error", "Social Login Account", ctx)
+			return
+		}
+
+		link := "exp://192.168.88.223:8081/--/resetpassword/"
+		token, tokenErr := utils.CreateForgotPasswordToken(user.ID, user.Email)
+
+		if tokenErr != nil {
+			utils.CreateInternalServerError(ctx)
+			return
+		}
+
+		link += token
+		subject := "Forgot Your Password?"
+
+		html := `
+		<p>It looks like you forgot your password.
+		If you did, please click the link below to reset it.
+		If you did not, disregard this email. Please update your password
+		within 10 minutes, otherwise you will have to repeat this
+		process. <a href=` + link + `>Click to Reset Password</a>
+		</p><br />`
+
+		emailSent, emailSentErr := utils.SendMail(user.Email, subject, html)
+		if emailSentErr != nil {
+			utils.CreateInternalServerError(ctx)
+			return
+		}
+
+		if emailSent {
+			ctx.JSON(iris.Map{
+				"emailSent": true,
+			})
+			return
+		}
+
+		ctx.JSON(iris.Map{"emailSent": false})
+	}
+}
+
+func Resetpassword(ctx iris.Context) {
+	var password ResetPasswordInput
+	err := ctx.ReadJSON(&password)
+	if err != nil {
+		utils.HandleValidationErrors(err, ctx)
+		return
+	}
+
+	hashedPassword, hashErr := hashAndSaltPassword(password.Password)
+	if hashErr != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	claims := jsonWT.Get(ctx).(*utils.ForgotPasswordToken)
+
+	var user models.User
+	storage.DB.Model(&user).Where("id = ?", claims.ID).Update("password", hashedPassword)
+
+	ctx.JSON(iris.Map{
+		"passwordReset": true,
+	})
+}
+
 func getAndHandleUserExists(user *models.User, email string) (exists bool, err error) {
 	userExistQuery := storage.DB.Where("email = ?", strings.ToLower(email)).Limit(1).Find(&user)
 
@@ -115,7 +203,7 @@ func getAndHandleUserExists(user *models.User, email string) (exists bool, err e
 	return false, nil
 }
 
-func hashAndHandleUserExists(password string) (hashedPassword string, err error) {
+func hashAndSaltPassword(password string) (hashedPassword string, err error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
@@ -134,4 +222,12 @@ type RegisterUserInput struct {
 type LoginUserInput struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+type EmailRegisteredInput struct {
+	Email string `json:"email" validate:"required"`
+}
+
+type ResetPasswordInput struct {
+	Password string `json:"password" validate:"required,min=8,max=256"`
 }
