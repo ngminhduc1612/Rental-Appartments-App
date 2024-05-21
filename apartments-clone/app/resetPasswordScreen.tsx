@@ -72,8 +72,6 @@ export default function ResetPasswordScreen(
               .required("Required"),
           })}
           onSubmit={(values) => {
-            // console.log("send values to server", values);
-            // navigation.navigate("signInScreen")
             resetPassword.mutate(values.password);
           }}
         >

@@ -5,12 +5,15 @@ import { Text, Input, Button } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as yup from "yup";
 import * as ImagePicker from "expo-image-picker";
+import RNPhoneInput from "react-native-phone-number-input";
 
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
+import { PhoneInput } from "@/components/PhoneInput";
 
 export default function CreateManagerScreen() {
     const [imageURI, setImageURI] = useState("");
+    const phoneRef = useRef<RNPhoneInput>(null);
 
     const pickImage = async (
         setBase64Image: (field: string, value: any) => void,
@@ -26,6 +29,12 @@ export default function CreateManagerScreen() {
             setBase64Image(field, result.assets[0].base64 as string);
             setImageURI(result.assets[0].uri);
         }
+    };
+
+    const createManager = () => {
+        console.log(
+            "Create a manger on the backend and go on to adding a property"
+        );
     };
 
     return (
@@ -56,6 +65,15 @@ export default function CreateManagerScreen() {
                             website: yup.string(),
                             image: yup.string(),
                         })}
+                        onSubmit={(values) => {
+                            if (
+                                values.phoneNumber &&
+                                !phoneRef.current?.isValidNumber(values.phoneNumber)
+                            )
+                                return;
+
+                            createManager();
+                        }}
                     >
                         {({
                             values,
@@ -115,6 +133,13 @@ export default function CreateManagerScreen() {
                                         status={
                                             touched.website && errors.website ? "danger" : "basic"
                                         }
+                                    />
+
+                                    <PhoneInput
+                                        onChangeText={handleChange("phoneNumber")}
+                                        phoneNumber={values.phoneNumber}
+                                        style={styles.input}
+                                        phoneRef={phoneRef}
                                     />
 
                                     {imageURI ? (
