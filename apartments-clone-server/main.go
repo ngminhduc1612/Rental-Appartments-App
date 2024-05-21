@@ -3,9 +3,12 @@ package main
 import (
 	"apartments-clone-server/routes"
 	"apartments-clone-server/storage"
+	"apartments-clone-server/utils"
+	"os"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/middleware/jwt"
 	"github.com/lpernett/godotenv"
 )
 
@@ -16,6 +19,12 @@ func main() {
 	app := iris.Default()
 	app.Validator = validator.New() //validate
 
+	resetTokenVerifier := jwt.NewVerifier(jwt.HS256, []byte(os.Getenv("EMAIL_TOKEN_SECRET")))
+	resetTokenVerifier.WithDefaultBlocklist()
+	resetTokenVerifierMiddleware := resetTokenVerifier.Verify(func() interface{} {
+		return new(utils.ForgotPasswordToken)
+	})
+
 	location := app.Party("/api/location")
 	{
 		location.Get("/autocomplete", routes.Autocomplete)
@@ -25,6 +34,8 @@ func main() {
 	{
 		user.Post("/register", routes.Register)
 		user.Post("/login", routes.Login)
+		user.Post("/forgotpassword", routes.ForgotPassword)
+		user.Post("/resetpassword", resetTokenVerifierMiddleware, routes.Resetpassword)
 	}
 
 	app.Listen(":4000")

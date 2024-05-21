@@ -23,5 +23,7 @@ export const endpoints = {
     autoComplete: locationEndpoint + "/autocomplete",
     search: locationEndpoint + "/search", 
     register: userEndpoint + "/register",
-    login: userEndpoint + "/login"
+    login: userEndpoint + "/login",
+    forgotPassword: userEndpoint + "/forgotpassword",
+    resetPassword: userEndpoint + "/resetpassword",
 };
