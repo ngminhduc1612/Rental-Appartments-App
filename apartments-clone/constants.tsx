@@ -16,8 +16,10 @@ export const HEADERHEIGHT = Platform.OS === "ios" ? iosHeight : androidHeight;
 const serverURL = "http://192.168.88.223:4000/api";
 const location = "/location";
 const user = "/user";
+const manager = "/manager"
 const locationEndpoint = serverURL + location;
 const userEndpoint = serverURL + user;
+const managerEndpoint = serverURL + manager;
 
 export const endpoints = {
     autoComplete: locationEndpoint + "/autocomplete",
@@ -26,4 +28,6 @@ export const endpoints = {
     login: userEndpoint + "/login",
     forgotPassword: userEndpoint + "/forgotpassword",
     resetPassword: userEndpoint + "/resetpassword",
+    createManager: managerEndpoint + "/create",
+    getManagersByUserID: managerEndpoint + "/userid/",
 };

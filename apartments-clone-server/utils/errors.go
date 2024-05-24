@@ -14,7 +14,7 @@ func CreateError(statusCode int, title string, detail string, ctx iris.Context) 
 func CreateInternalServerError(ctx iris.Context) { //status code 500
 	CreateError(iris.StatusInternalServerError,
 		"Internal Server Error",
-		"Internal Server Erorr",
+		"Internal Server Error",
 		ctx)
 }
 
