@@ -53,7 +53,7 @@ export const RecentSearchList = ({
                         index < 2 ? (
                             <RecentSearchButton
                                 key={i.display_name + index}
-                                name={getFormattedLocationText(i)}
+                                name={getFormattedLocationText(i, "autocomplete")}
                                 style={styles.recentSearchButton}
                                 onPress={() => handleRecentSearchButtonPress(i)}
                             />
@@ -68,7 +68,7 @@ export const RecentSearchList = ({
                   {recentSearches.map((i, index) => (
                     <RecentSearchButton
                       key={i.display_name + index}
-                      name={getFormattedLocationText(i)}
+                      name={getFormattedLocationText(i, "autocomplete")}
                       style={styles.recentSearchButton}
                       onPress={() => handleRecentSearchButtonPress(i)}
                     />
