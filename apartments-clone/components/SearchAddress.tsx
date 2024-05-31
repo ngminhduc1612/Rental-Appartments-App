@@ -36,6 +36,7 @@ export const SearchAddress = ({
         let locations;
         if (type === "search") locations = await searchLocations(value);
         else locations = await getSuggestedLocations(value);
+        
         if (locations.length > 0) setSuggestions(locations);
     }
 

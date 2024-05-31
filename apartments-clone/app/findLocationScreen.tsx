@@ -13,7 +13,6 @@ import { RecentSearchList } from "@/components/RecentSearchList";
 import { SearchAddress } from "@/components/SearchAddress";
 
 export default function FindLocationScreen() {
-    const [value, setValue] = useState("");
     const [suggestions, setSuggestions] = useState<Location[]>([]);;
     const navigation = useNavigation();
     const queryClient = useQueryClient();
