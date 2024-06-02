@@ -1,9 +1,14 @@
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
-import { Input, Text } from "@ui-kitten/components";
-import { View, StyleSheet } from "react-native";
+import { Input, Text, Divider, Button } from "@ui-kitten/components";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Formik } from "formik";
 import { PickerItem } from "react-native-woodpicker";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as yup from "yup";
+import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+import { useNavigation } from "@react-navigation/native";
 
 import { Screen } from "./Screen";
 import { ModalHeader } from "./ModalHeader";
@@ -13,14 +18,85 @@ import { SearchLocation } from "@/types/locationIQ";
 import { SearchAddress } from "./SearchAddress";
 import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
 import { Select } from "./Select";
+import { theme } from "@/theme";
+import { Manager } from "@/types/manager";
+import { CreateProperty, Property } from "@/types/property";
+import { endpoints } from "@/constants";
 
 export const AddPropertySection = () => {
+    const queryClient = useQueryClient();
+    const navigation = useNavigation();
     const [searchingLocation, setSearchingLocation] = useState(false);
     const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
+    const manager: { data: Manager } | undefined =
+        queryClient.getQueryData("manager");
+    const createProperty = useMutation("property", async (obj: CreateProperty) => {
+        return axios.post<Property>(endpoints.createProperty, obj)
+    }, {
+        onError() {
+            alert("Unable to create property")
+        },
+        onSuccess(data: { data: Property }) {
+            navigation.navigate("editPropertyScreen", { propertyID: data.data.ID })
+        }
+    }
+    );
+
+    const onSubmit = (values: {
+        unitType: string;
+        street: string;
+        city: string;
+        state: string;
+        zip: string;
+        lat: string;
+        lng: string;
+        propertyType: PickerItem;
+        unit: {
+            bedrooms: PickerItem;
+            bathrooms: PickerItem;
+        };
+        units: {
+            unit: string;
+            bedrooms: PickerItem;
+            bathrooms: PickerItem;
+        }[]
+    }) => {
+        if (manager) {
+            const obj: CreateProperty = {
+                unitType: values.unitType,
+                propertyType: values.propertyType.value,
+                street: values.street,
+                city: values.city,
+                state: values.state,
+                zip: Number(values.zip),
+                lat: Number(values.lat),
+                lng: Number(values.lng),
+                managerID: manager.data.ID,
+                apartments: [],
+            };
+
+            if (values.unitType === "multiple") {
+                for (let i of values.units) {
+                    obj.apartments.push({
+                        unit: i.unit,
+                        bathrooms: i.bathrooms.value,
+                        bedrooms: i.bedrooms.value,
+                    });
+                }
+            } else {
+                obj.apartments.push({
+                    bathrooms: values.unit.bathrooms.value,
+                    bedrooms: values.unit.bedrooms.value,
+                });
+            }
+
+            createProperty.mutate(obj);
+        }
+    }
 
     const handleGoBack = () => {
         setSearchingLocation(false);
-    }
+    };
 
     return (
         <KeyboardAwareFlatList
@@ -35,21 +111,9 @@ export const AddPropertySection = () => {
                             </Text>
                             }
                             <Formik
-                                initialValues={{
-                                    unitType: "single",
-                                    street: "",
-                                    city: "",
-                                    state: "",
-                                    zip: "",
-                                    lat: "",
-                                    lng: "",
-                                    propertyTypes: propertyTypes[0],
-                                    unit: {
-                                        bedrooms: bedValues[0],
-                                        bathrooms: bathValues[0],
-                                    },
-                                }}
-                                onSubmit={(values) => console.log(values)}
+                                initialValues={initialValues}
+                                validationSchema={validationSchema}
+                                onSubmit={(values) => onSubmit(values)}
                             >
                                 {({
                                     values,
@@ -106,6 +170,26 @@ export const AddPropertySection = () => {
                                         />
                                     );
 
+                                    const addUnit = () => {
+                                        const currUnits = [...values.units]
+                                        currUnits.push({
+                                            unit: "",
+                                            bedrooms: bedValues[0],
+                                            bathrooms: bathValues[0],
+                                        });
+
+                                        setFieldValue("units", currUnits);
+                                    };
+
+                                    const removeUnit = (index: number) => {
+                                        const currUnits = [...values.units]
+                                        const newUnits = currUnits.filter(
+                                            (i, idx) => index !== idx
+                                        )
+
+                                        setFieldValue("units", newUnits);
+                                    }
+
                                     return <View>
                                         <Row style={styles.row}>
                                             <UnitButton
@@ -142,7 +226,7 @@ export const AddPropertySection = () => {
 
                                         <Select
                                             label="Property Type"
-                                            item={values.propertyTypes}
+                                            item={values.propertyType}
                                             items={propertyTypes}
                                             onItemChange={(item) =>
                                                 setFieldValue("propertyType", item)
@@ -151,28 +235,117 @@ export const AddPropertySection = () => {
                                             style={styles.input}
                                         />
 
-                                        <Row style={[styles.unitRow, styles.input]}>
-                                            <Select
-                                                label="Beds"
-                                                item={values.unit.bedrooms}
-                                                items={bedValues}
-                                                onItemChange={(item) => {
-                                                    setFieldValue("unit.bedrooms", item);
-                                                }}
-                                                isNullable={false}
-                                                style={styles.smallSelect}
-                                            />
-                                            <Select
-                                                label="Baths"
-                                                item={values.unit.bathrooms}
-                                                items={bathValues}
-                                                onItemChange={(item) => {
-                                                    setFieldValue("unit.bathrooms", item);
-                                                }}
-                                                isNullable={false}
-                                                style={styles.smallSelect}
-                                            />
-                                        </Row>
+                                        {values.unitType === "single" ? (
+                                            <Row style={[styles.unitRow, styles.input]}>
+                                                <Select
+                                                    label="Beds"
+                                                    item={values.unit.bedrooms}
+                                                    items={bedValues}
+                                                    onItemChange={(item) => {
+                                                        setFieldValue("unit.bedrooms", item);
+                                                    }}
+                                                    isNullable={false}
+                                                    style={styles.smallSelect}
+                                                />
+                                                <Select
+                                                    label="Baths"
+                                                    item={values.unit.bathrooms}
+                                                    items={bathValues}
+                                                    onItemChange={(item) => {
+                                                        setFieldValue("unit.bathrooms", item);
+                                                    }}
+                                                    isNullable={false}
+                                                    style={styles.smallSelect}
+                                                />
+                                            </Row>
+                                        ) : (
+                                            <>
+                                                <TouchableOpacity style={styles.addUnit} onPress={addUnit}>
+                                                    <MaterialIcons
+                                                        name="add-circle-outline"
+                                                        size={20}
+                                                        color={theme["color-info-500"]}
+                                                    />
+                                                    <Text
+                                                        category="s2"
+                                                        status="info"
+                                                        style={styles.addUnitText}
+                                                    >
+                                                        Add Another Unit
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                {values.units.map((item, index) => (
+                                                    <View key={index} style={styles.unitSection}>
+                                                        {index > 0 ? (
+                                                            <Divider style={styles.divider} />
+                                                        ) : null}
+                                                        <View>
+                                                            {values.units.length > 1 ? (
+                                                                <TouchableOpacity style={styles.removeUnit} onPress={() => removeUnit(index)}>
+                                                                    <Text
+                                                                        appearance="hint"
+                                                                        category="c1"
+                                                                        style={styles.removeUnitText}
+                                                                        status="info"
+                                                                    >
+                                                                        Remove Unit
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            ) : null}
+                                                            <Input
+                                                                label="Unit"
+                                                                placeholder="# / Name"
+                                                                value={item.unit}
+                                                                onChangeText={handleChange(
+                                                                    `units[${index}].unit`
+                                                                )}
+                                                                autoCorrect={false}
+                                                                caption={
+                                                                    errors.units &&
+                                                                        touched.units &&
+                                                                        (errors.units[index] as any)?.unit
+                                                                        ? (errors.units[index] as any).unit
+                                                                        : undefined
+                                                                }
+                                                                status={
+                                                                    errors.units &&
+                                                                        touched.units &&
+                                                                        (errors.units[index] as any)?.unit
+                                                                        ? "danger"
+                                                                        : "basic"
+                                                                }
+                                                            />
+                                                        </View>
+                                                        <Row style={[styles.unitRow, styles.input]}>
+                                                            <Select
+                                                                label="Beds"
+                                                                item={item.bedrooms}
+                                                                items={bedValues}
+                                                                onItemChange={(item) => {
+                                                                    setFieldValue(`units[${index}].bedrooms`, item);
+                                                                }}
+                                                                isNullable={false}
+                                                                style={styles.smallSelect}
+                                                            />
+                                                            <Select
+                                                                label="Baths"
+                                                                item={item.bathrooms}
+                                                                items={bathValues}
+                                                                onItemChange={(item) => {
+                                                                    setFieldValue(`units[${index}].bathrooms`, item);
+                                                                }}
+                                                                isNullable={false}
+                                                                style={styles.smallSelect}
+                                                            />
+                                                        </Row>
+                                                    </View>
+                                                ))}
+                                            </>
+                                        )}
+
+                                        <Button onPress={() => handleSubmit()} style={styles.button}>
+                                            Add My Property
+                                        </Button>
                                     </View>
                                 }}
                             </Formik>
@@ -204,7 +377,35 @@ const styles = StyleSheet.create({
     },
     smallSelect: {
         width: "45%",
-    }
+    },
+    unitSection: {
+        marginVertical: 20,
+    },
+    addUnit: {
+        flexDirection: "row",
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingRight: 10,
+    },
+    addUnitText: { fontWeight: "bold", marginLeft: 5 },
+    removeUnit: {
+        position: "absolute",
+        right: 5,
+        zIndex: 10,
+        paddingBottom: 5,
+    },
+    removeUnitText: {
+        fontWeight: "bold",
+    },
+    divider: {
+        backgroundColor: theme["color-gray"],
+        marginBottom: 30,
+        width: "95%",
+        alignSelf: "center",
+    },
+    button: {
+        marginTop: 20,
+    },
 });
 
 const propertyTypes: PickerItem[] = [
@@ -243,3 +444,69 @@ const bathValues: PickerItem[] = [
     { label: "6.0", value: 6 },
     { label: "6.5", value: 6.5 },
 ]
+
+const initialValues = {
+    unitType: "single",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    lat: "",
+    lng: "",
+    propertyType: propertyTypes[0],
+    unit: {
+        bedrooms: bedValues[0],
+        bathrooms: bathValues[0],
+    },
+    units: [
+        {
+            unit: "",
+            bedrooms: bedValues[0],
+            bathrooms: bathValues[0],
+        },
+    ],
+};
+
+const validationSchema = yup.object().shape({
+    unitType: yup.string().required("Required"),
+    street: yup.string().required("Required"),
+    city: yup.string().required("Required"),
+    state: yup.string().required("Required"),
+    zip: yup.string().required("Required"),
+    lat: yup.string().required("Required"),
+    lng: yup.string().required("Required"),
+    propertyType: yup.object().shape({
+        label: yup.string().required("Required"),
+        value: yup.string().required("Required"),
+    }),
+}).when('unitType', {
+    is: 'single',
+    then: schema => schema.shape({
+        unit: yup.object().shape({
+            bedrooms: yup.object().shape({
+                label: yup.string().required("Required"),
+                value: yup.number().required("Required"),
+            }),
+            bathrooms: yup.object().shape({
+                label: yup.string().required("Required"),
+                value: yup.number().required("Required"),
+            }),
+        }).required("Required"),
+    }),
+    // otherwise: schema => schema.shape({
+    //     units: yup.array().of(
+    //         yup.object().shape({
+    //             unit: yup.string().required("Required"),
+    //             bedrooms: yup.object().shape({
+    //                 label: yup.string().required("Required"),
+    //                 value: yup.number().required("Required"),
+    //             }),
+    //             bathrooms: yup.object().shape({
+    //                 label: yup.string().required("Required"),
+    //                 value: yup.number().required("Required"),
+    //             }),
+    //         })
+    //     ).min(1, "At least one unit is required"),
+    // }),
+});
+

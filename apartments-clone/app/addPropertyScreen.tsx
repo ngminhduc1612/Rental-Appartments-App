@@ -25,10 +25,11 @@ export default function AddPropertyScreen(
     const managerQuery = useQuery(
         "manager",
         () => {
-            if (user) return axios.get(endpoints.getManagersByUserID + user.ID);
+            if (user) return axios.get(endpoints.getManagerByUserID + user.ID);
         },
         {
             cacheTime: 24 * 60 * 60 * 1000,
+            retry: false,
         }
     );
 
@@ -42,7 +43,7 @@ export default function AddPropertyScreen(
 
     if (managerQuery.isLoading || managerQuery.isFetching) return <Loading />
 
-    if (managerQuery.data?.data.managers.length === 0 || !managerQuery.data)
+    if (!managerQuery.data?.data)
         return <CreateManagerScreen refetchManagers={managerQuery.refetch} />;
 
 
