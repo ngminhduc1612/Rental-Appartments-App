@@ -52,6 +52,7 @@ export const ImageCarousel = ({
     };
     return (
         <>
+        {images && images.length > 0 ?
             <FlatList
                 ref={(ref) => (flatListRef.current = ref)}
                 data={images}
@@ -71,6 +72,13 @@ export const ImageCarousel = ({
                 )}
                 keyExtractor={(item) => item}
             />
+            : <Pressable onPress={onImagePress}>
+            <Image
+                source={require("../assets/images/NoImage.jpeg")}
+                style={[styles.image, imageStyle]}
+            />
+        </Pressable>
+        }
             {chevronsShown && (
                 <>
                     <Pressable

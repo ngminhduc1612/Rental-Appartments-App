@@ -20,7 +20,6 @@ const manager = "/manager";
 const property = "/property";
 const locationEndpoint = serverURL + location;
 const userEndpoint = serverURL + user;
-const managerEndpoint = serverURL + manager;
 const propertyEndpoint = serverURL + property;
 
 export const endpoints = {
@@ -30,8 +29,8 @@ export const endpoints = {
     login: userEndpoint + "/login",
     forgotPassword: userEndpoint + "/forgotpassword",
     resetPassword: userEndpoint + "/resetpassword",
-    createManager: managerEndpoint + "/create",
-    getManagerByUserID: managerEndpoint + "/userid/",
     createProperty: propertyEndpoint + "/create",
     getPropertyById: propertyEndpoint + "/",
+    getPropertiesByUserID: propertyEndpoint + "/userid/",
+    deleteProperty: propertyEndpoint + "/",
 };

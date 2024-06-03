@@ -5,7 +5,7 @@ import { Review } from "./review";
 import { Score } from "./score";
 
 export type Property = {
-    id: number;
+    ID: number;
     images: string[];
     rentLow: number;
     rentHigh: number;
@@ -24,6 +24,7 @@ export type Property = {
     website: string;
     pets?: Pet[];
     stars: number;
+    onMarket?: boolean;
     reviews?: Review[];
     features?: string[];
     apartments?: Apartment[];
@@ -41,6 +42,6 @@ export type CreateProperty = {
     zip: number;
     lat: number;
     lng: number;
-    managerID: number;
+    userID: number;
     apartments: {unit?: string; bedrooms: number; bathrooms: number}[];
 }

@@ -58,7 +58,7 @@ func CreateProperty(ctx iris.Context) {
 		BathroomLow:  bathroomLow,
 		BathroomHigh: bathroomHigh,
 		Apartments:   apartments,
-		ManagerID:    propertyInput.ManagerID,
+		UserID:       propertyInput.UserID,
 	}
 
 	storage.DB.Create(&property)
@@ -88,6 +88,39 @@ func GetProperty(ctx iris.Context) {
 	ctx.JSON(property)
 }
 
+func GetPropertiesByUserID(ctx iris.Context) {
+	params := ctx.Params()
+	id := params.Get("id")
+
+	var properties []models.Property
+	propertiesExist := storage.DB.Preload("Apartments").Where("user_id = ?", id).Find(&properties)
+
+	if propertiesExist.Error != nil {
+		utils.CreateError(
+			iris.StatusInternalServerError,
+			"Error", propertiesExist.Error.Error(), ctx)
+		return
+	}
+
+	ctx.JSON(properties)
+}
+
+func DeleteProperty(ctx iris.Context) {
+	params := ctx.Params()
+	id := params.Get("id")
+
+	propertyDeleted := storage.DB.Delete(&models.Property{}, id)
+
+	if propertyDeleted.Error != nil {
+		utils.CreateError(
+			iris.StatusInternalServerError,
+			"Error", propertyDeleted.Error.Error(), ctx)
+		return
+	}
+
+	ctx.StatusCode(iris.StatusNoContent)
+}
+
 type PropertyInput struct {
 	UnitType     string           `json:"unitType" validate:"required,oneof=single multiple"`
 	PropertyType string           `json:"propertyType" validate:"required,max=256"`
@@ -97,7 +130,7 @@ type PropertyInput struct {
 	Zip          int              `json:"zip" validate:"required"`
 	Lat          float32          `json:"lat" validate:"required"`
 	Lng          float32          `json:"lng" validate:"required"`
-	ManagerID    uint             `json:"managerID" validate:"required"`
+	UserID       uint             `json:"userID" validate:"required"`
 	Apartments   []ApartmentInput `json:"apartments" validate:"required,dive"`
 }
 

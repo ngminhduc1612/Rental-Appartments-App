@@ -16,6 +16,6 @@ type Property struct {
 	BedroomHigh  int         `json:"bedroomHigh"`
 	BathroomLow  float32     `json:"bathroomLow"`
 	BathroomHigh float32     `json:"bathroomHigh"`
-	ManagerID    uint        `json:"managerID"`
+	UserID       uint        `json:"userID"`
 	Apartments   []Apartment `json:"apartments"`
 }

@@ -97,7 +97,7 @@ function RootLayoutNav() {
           <Stack.Screen name="propertyDeitalsScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="messageScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="addPropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
-          <Stack.Screen name="createManagerScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="myPropertiesScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="editPropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>

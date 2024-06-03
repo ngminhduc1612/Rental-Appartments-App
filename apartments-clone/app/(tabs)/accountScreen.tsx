@@ -19,7 +19,7 @@ export default function AccountScreen() {
         },
         {
             label: "View my Properties",
-            onPress: () => console.log("navigate to my properties"),
+            onPress: () => navigation.navigate("myPropertiesScreen"),
         },
     ];
 
@@ -45,7 +45,7 @@ export default function AccountScreen() {
         },
         {
             label: "My Residences",
-            onPress: () => console.log("navigate to My Residences"),
+            onPress: () => navigation.navigate("myPropertiesScreen"),
         },
         {
             label: "Rent Payments",
