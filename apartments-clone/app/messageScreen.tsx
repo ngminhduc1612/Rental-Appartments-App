@@ -13,6 +13,7 @@ import { Row } from "@/components/Row";
 import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
 import { useAuth } from "@/hooks/useAuth";
 import { properties } from "@/data/property";
+import { PressableInput } from "@/components/pressableInput";
 
 export default function MessageScreen(
     // { route }: { route: { params: { propertyID: number, tour?: boolean } } }
@@ -22,8 +23,6 @@ export default function MessageScreen(
     const { tour, propertyID } = route.params;
     const index = properties.findIndex((i) => i.id === propertyID);
     const property = properties[index];
-    const [pickedDate, setPickedDate] = useState<Date>(new Date());
-    const [showCalendar, setShowCalendar] = useState(false);
     const { user } = useAuth();
 
     return (
@@ -53,6 +52,8 @@ export default function MessageScreen(
                         phoneNumber: "",
                         email: user ? user.email : "",
                         message: tour ? "I would like to schedule a tour." : "",
+                        date: new Date(),
+                        showCalendar: false,
                     }}
                     validationSchema={yup.object().shape({
                         firstName: yup.string().required("Required"),
@@ -60,6 +61,8 @@ export default function MessageScreen(
                         phoneNumber: yup.string(),
                         email: yup.string().email().required("Required"),
                         message: yup.string().required("Required"),
+                        date: yup.date().required("Required"),
+                        showCalendar: yup.bool(),
                     })}
                     onSubmit={(values) => {
                         console.log("send values", values);
@@ -138,32 +141,21 @@ export default function MessageScreen(
                                     }
                                 />
 
-                                <View style={[styles.input]}>
-                                    <Text
-                                        style={styles.moveInLabel}
-                                        category="label"
-                                        appearance="hint"
-                                    >
-                                        Move-In Date
-                                    </Text>
-                                    <Pressable
-                                        onPress={() => setShowCalendar(true)}
-                                        style={styles.pickedDate}
-                                    >
-                                        <Text style={styles.pickedDateText}>
-                                            {pickedDate?.toDateString()}
-                                        </Text>
-                                    </Pressable>
-                                </View>
+                                <PressableInput
+                                    style={styles.input}
+                                    label="Move-In Date"
+                                    value={values.date.toDateString()}
+                                    onPress={() => setFieldValue("showCalendar", true)}
+                                />
 
-                                {showCalendar && (
+                                {values.showCalendar && (
                                     <DateTimePicker
-                                        value={pickedDate}
+                                        value={values.date}
                                         mode="date"
                                         onChange={(event: any, selectedDate?: Date) => {
                                             if (selectedDate) {
-                                                setShowCalendar(false);
-                                                setPickedDate(selectedDate);
+                                                setFieldValue("showCalendar" ,false);
+                                                setFieldValue("date", selectedDate);
                                             }
                                         }}
                                     />
