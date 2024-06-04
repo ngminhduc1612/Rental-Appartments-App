@@ -19,14 +19,14 @@ export default function PropertyDetailsScreen(
     // { route }: { route: { params: { propertyId: number } } }
 ) {
     const route = useRoute();
-    const index = properties.findIndex(i => i.id === route.params.propertyID);
+    const index = properties.findIndex(i => i.ID === route.params.propertyID);
     const property = properties[index]
 
     return (
         <Screen>
             <FlatList
                 data={[property]}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={item => item.ID.toString()}
                 renderItem={({ item }) => (
                     <>
                         {item.images ? (

@@ -1,7 +1,7 @@
-import { Pressable, ViewStyle, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Pressable, ViewStyle, StyleSheet, TouchableOpacity, View, Modal, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Button, Modal } from "@ui-kitten/components";
+import { Button } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
@@ -38,7 +38,7 @@ export const Card = ({
                 const prevProperties: { data: Property[] } | undefined =
                     queryClient.getQueryData("myproperties");
 
-                if(prevProperties) {
+                if (prevProperties) {
                     const filtered = prevProperties.data.filter(
                         (i) => i.ID !== property.ID
                     );
@@ -46,7 +46,7 @@ export const Card = ({
                     queryClient.setQueryData("myproperties", filtered);
                 }
 
-                return {prevProperties};
+                return { prevProperties };
             },
             onError: (err, newTodo, context) => {
                 if (context?.prevProperties)
@@ -72,7 +72,7 @@ export const Card = ({
     };
 
     return (
-        <Pressable onPress={onPress} style={[styles.container, style]}>
+        <Pressable onPress={onPress} style={[styles.container, styles. boxShadow, style]}>
             <ImageCarousel
                 onImagePress={onPress}
                 images={property.images}
@@ -91,16 +91,18 @@ export const Card = ({
             ) : null}
             <Modal
                 visible={showModal}
-                backdropStyle={styles.backdrop}
-                onBackdropPress={closeModal}
+                transparent
             >
-                <View style={styles.modal}>
+                <View style={[styles.modal, styles.boxShadow]}>
                     <Button status={"info"} appearance="ghost" style={styles.modalButton} onPress={handleEditProperty}>
                         Edit Property
                     </Button>
                     <Button status={"danger"} appearance="ghost" onPress={handleDeleteProperty}
                     >
                         Delete Property
+                    </Button>
+                    <Button appearance="ghost" onPress={closeModal}>
+                        Cancle
                     </Button>
                 </View>
             </Modal>
@@ -129,8 +131,21 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 5,
         padding: 20,
+        position: "absolute",
+        top: Dimensions.get("screen").height / 3,
+        right: Dimensions.get("screen").width / 4,
     },
     modalButton: {
         marginBottom: 5, // Adjust this value to increase/decrease the space
+    },
+    boxShadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 10,
     }
 })

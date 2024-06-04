@@ -2,7 +2,8 @@ import { Property } from "@/types/property";
 
 export const properties: Property[] = [
   {
-    id: 1,
+    ID: 1,
+    unitType: "single",
     images: [
       "https://visaho.vn/upload_images/images/2022/04/01/dien-tich-can-ho-chung-cu-2-min.jpg",
       "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
@@ -21,6 +22,21 @@ export const properties: Property[] = [
     tags: ["Parking"],
     lat: 21.005667164666153,
     lng: 105.84725432718425,
+    apartments: [
+      {
+        CreatedAt: "2022-05-09T19:27:23.084252-05:00",
+        DeletedAt: null,
+        ID: 1,
+        UpdatedAt: "2022-05-09T19:28:03.572996-05:00",
+        bathrooms: 2,
+        bedrooms: 2,
+        images: ["https://apartmentstut.s3.us-east-2.amazonaws.com/1/1/0"],
+        propertyID: 1,
+        rent: 4524,
+        sqFt: 1404,
+        unit: "0204",
+      },
+    ],
     phoneNumber: "09434637463",
     website: "www.adias.com",
     fee: [
@@ -44,7 +60,8 @@ export const properties: Property[] = [
     stars: 0,
   },
   {
-    id: 2,
+    ID: 2,
+    unitType: "multiple",
     about:
       "At 7 West, urban apartment-life decadence extends beyond your front door. Elevate your lifestyle with gracious concierge services including packages and dry cleaning delivered straight to your door. Enjoy the fun and frequent resident activities like our weekly “Wake Up with Weidner” that includes a free breakfast and “Pizza Night.” Grab a slice, get to know your neighbors and make new friends. Get healthy in our state-of-the-art fitness center and achieve enlightenment in our calming yoga studio. Take advantage of the gorgeous resident lounge complete with kitchen and free wifi to relax, work and study. Challenge your neighbor to a billiards match in the game room, and entertain friends and family on the rooftop terrace or reserve the clubhouse for special occasions. You can also rest assured with controlled access to the building, an underground heated parking garage and a courtesy security patrol. We have furnished apartments available, and we’re a pet-friendly apartment community, complete with a “Yappy Hour” for residents and their dogs to mingle and make friends.",
     images: [
@@ -207,7 +224,8 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 3,
+    ID: 3,
+    unitType: "multiple",
     images: [
       "https://visaho.vn/upload_images/images/2022/04/01/dien-tich-can-ho-chung-cu-2-min.jpg",
       "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
@@ -337,7 +355,8 @@ export const properties: Property[] = [
     stars: 0,
   },
   {
-    id: 4,
+    ID: 4,
+    unitType: "multiple",
     images: [
       "https://visaho.vn/upload_images/images/2022/04/01/dien-tich-can-ho-chung-cu-2-min.jpg",
       "https://vcdn-kinhdoanh.vnecdn.net/2019/12/23/image002-8881-1577094450.png"
@@ -501,7 +520,8 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 5,
+    ID: 5,
+    unitType: "multiple",
     about:
       "At 7 West, urban apartment-life decadence extends beyond your front door. Elevate your lifestyle with gracious concierge services including packages and dry cleaning delivered straight to your door. Enjoy the fun and frequent resident activities like our weekly “Wake Up with Weidner” that includes a free breakfast and “Pizza Night.” Grab a slice, get to know your neighbors and make new friends. Get healthy in our state-of-the-art fitness center and achieve enlightenment in our calming yoga studio. Take advantage of the gorgeous resident lounge complete with kitchen and free wifi to relax, work and study. Challenge your neighbor to a billiards match in the game room, and entertain friends and family on the rooftop terrace or reserve the clubhouse for special occasions. You can also rest assured with controlled access to the building, an underground heated parking garage and a courtesy security patrol. We have furnished apartments available, and we’re a pet-friendly apartment community, complete with a “Yappy Hour” for residents and their dogs to mingle and make friends.",
     images: [

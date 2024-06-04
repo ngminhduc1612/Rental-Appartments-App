@@ -4,18 +4,26 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
 
 import { WIDTH } from "../constants";
+import { theme } from "@/theme";
 
 export const ImageCarousel = ({
     images,
     onImagePress,
     chevronsShown,
     indexShown,
+    xShown,
+    onXPress,
     imageStyle,
 }: {
     images: string[];
     onImagePress?: () => void;
     chevronsShown?: boolean;
     indexShown?: boolean;
+    xShown?: boolean;
+    onXPress?: (
+        index: number,
+        flatListRef?: React.MutableRefObject<FlatList<any> | null>
+    ) => void;
     imageStyle?: ImageStyle;
 }) => {
     const flatListRef = useRef<FlatList | null>(null);
@@ -52,33 +60,42 @@ export const ImageCarousel = ({
     };
     return (
         <>
-        {images && images.length > 0 ?
-            <FlatList
-                ref={(ref) => (flatListRef.current = ref)}
-                data={images}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                snapToAlignment="center"
-                pagingEnabled
-                viewabilityConfig={viewConFig}
-                onViewableItemsChanged={onViewRef.current}
-                renderItem={({ item }) => (
-                    <Pressable onPress={onImagePress}>
-                        <Image
-                            source={{ uri: item }}
-                            style={[styles.image, imageStyle]}
-                        />
-                    </Pressable>
-                )}
-                keyExtractor={(item) => item}
-            />
-            : <Pressable onPress={onImagePress}>
-            <Image
-                source={require("../assets/images/NoImage.jpeg")}
-                style={[styles.image, imageStyle]}
-            />
-        </Pressable>
-        }
+            {images && images.length > 0 ?
+                <FlatList
+                    ref={(ref) => (flatListRef.current = ref)}
+                    data={images}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    pagingEnabled
+                    viewabilityConfig={viewConFig}
+                    onViewableItemsChanged={onViewRef.current}
+                    renderItem={({ item, index }) => (
+                        <Pressable onPress={onImagePress}>
+                            <Image
+                                source={{ uri: item }}
+                                style={[styles.image, imageStyle]}
+                            />
+                            {xShown && onXPress ? (
+                                <MaterialCommunityIcons
+                                    onPress={() => onXPress(index, flatListRef)}
+                                    style={styles.x}
+                                    name="close"
+                                    color={theme["color-primary-500"]}
+                                    size={20}
+                                />
+                            ) : null}
+                        </Pressable>
+                    )}
+                    keyExtractor={(item, index) => item + index} //Tránh chọn trùng ảnh và bị bug
+                />
+                : <Pressable onPress={onImagePress}>
+                    <Image
+                        source={require("../assets/images/NoImage.jpeg")}
+                        style={[styles.image, imageStyle]}
+                    />
+                </Pressable>
+            }
             {chevronsShown && (
                 <>
                     <Pressable
@@ -139,5 +156,22 @@ const styles = StyleSheet.create({
     },
     indexText: {
         color: "#fff"
+    },
+    x: {
+        position: "absolute",
+        top: 5,
+        right: 5,
+        backgroundColor: "#fff",
+        borderRadius: 30,
+        padding: 10,
+        zIndex: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 10,
     },
 })

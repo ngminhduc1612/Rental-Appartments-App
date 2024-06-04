@@ -79,7 +79,7 @@ export default function AccountScreen() {
         },
         {
             label: "View My Properties",
-            onPress: () => console.log("navigate to MyProperties"),
+            onPress: () => navigation.navigate("myPropertiesScreen"),
         },
     ]
 

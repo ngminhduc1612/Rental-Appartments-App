@@ -9,10 +9,12 @@ import { Row } from "./Row";
 export const ModalHeader = ({
     XShown,
     text,
+    onPress,
     style,
 }: {
     XShown?: boolean;
     text?: string;
+    onPress?: () => void;
     style?: ViewStyle | ViewStyle[];
 }
 
@@ -24,7 +26,7 @@ export const ModalHeader = ({
             <Row style={[styles.container, style as ViewStyle]}>
                 {XShown ? (
                     <MaterialCommunityIcons
-                        onPress={navigation.goBack}
+                        onPress={onPress ? onPress : navigation.goBack}
                         style={styles.x}
                         name="close"
                         color={"black"}

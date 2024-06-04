@@ -50,8 +50,8 @@ export default function SavedScreen() {
                 showsVerticalScrollIndicator={false}
                 data={properties}
                 style={{ marginTop: 10 }}
-                renderItem={({ item }) => <Card property={item} style={styles.card} onPress={() => navigation.navigate("propertyDeitalsScreen", { propertyID: item.id })} />}
-                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => <Card property={item} style={styles.card} onPress={() => navigation.navigate("propertyDeitalsScreen", { propertyID: item.ID })} />}
+                keyExtractor={(item) => item.ID.toString()}
             />
         );
     };
@@ -156,7 +156,6 @@ export default function SavedScreen() {
 
 const styles = StyleSheet.create({
     screen: {
-        marginHorizontal: 10,
         marginVertical: 5,
     },
     buttonContainer: {
@@ -203,7 +202,6 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     card: {
-        marginHorizontal: 0,
-        marginVertical: 5,
+        marginVertical: 10,
     }
 });

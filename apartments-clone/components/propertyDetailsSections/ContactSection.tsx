@@ -71,7 +71,7 @@ export const ContactSection = ({ property }: { property: Property }) => {
                     appearance="ghost"
                     onPress={() => {
                         navigation.navigate("messageScreen", {
-                            propertyID: property.id,
+                            propertyID: property.ID,
                             tour: true,
                         });
                     }}
@@ -83,7 +83,7 @@ export const ContactSection = ({ property }: { property: Property }) => {
                     appearance="ghost"
                     onPress={() => {
                         navigation.navigate("messageScreen", {
-                            propertyID: property.id,
+                            propertyID: property.ID,
                         });
                     }}
                 >
