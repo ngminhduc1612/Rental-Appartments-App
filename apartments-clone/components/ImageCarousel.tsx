@@ -1,4 +1,4 @@
-import { FlatList, Pressable, Image, StyleSheet, ImageStyle, View } from "react-native";
+import { FlatList, Pressable, Image, StyleSheet, ImageStyle, View, ViewStyle } from "react-native";
 import { Text } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
@@ -12,7 +12,9 @@ export const ImageCarousel = ({
     chevronsShown,
     indexShown,
     xShown,
-    onXPress,
+    field,
+    setImages,
+    style,
     imageStyle,
 }: {
     images: string[];
@@ -20,10 +22,9 @@ export const ImageCarousel = ({
     chevronsShown?: boolean;
     indexShown?: boolean;
     xShown?: boolean;
-    onXPress?: (
-        index: number,
-        flatListRef?: React.MutableRefObject<FlatList<any> | null>
-    ) => void;
+    field?: string;
+    setImages?: (field: string, values: any) => void;
+    style?: ViewStyle | ViewStyle[];
     imageStyle?: ImageStyle;
 }) => {
     const flatListRef = useRef<FlatList | null>(null);
@@ -34,6 +35,22 @@ export const ImageCarousel = ({
             setActiveIndex(changed[0].index)
         }
     });
+
+    const onXPress = (index: number) => {
+        if (field && setImages) {
+            const newImages = images.filter((i, idx) => index !== idx);
+            setImages(field, newImages);
+
+            if(
+                index !== 0 &&
+                index === images.length - 1 &&
+                flatListRef &&
+                flatListRef.current 
+            ) {
+                flatListRef.current.scrollToIndex({ index: index - 1});
+            }
+        }
+    };
 
     const handlePressLeft = () => {
         if (activeIndex === 0)
@@ -59,7 +76,7 @@ export const ImageCarousel = ({
         });
     };
     return (
-        <>
+        <View style={style}>
             {images && images.length > 0 ?
                 <FlatList
                     ref={(ref) => (flatListRef.current = ref)}
@@ -76,9 +93,9 @@ export const ImageCarousel = ({
                                 source={{ uri: item }}
                                 style={[styles.image, imageStyle]}
                             />
-                            {xShown && onXPress ? (
+                            {xShown ? (
                                 <MaterialCommunityIcons
-                                    onPress={() => onXPress(index, flatListRef)}
+                                    onPress={() => onXPress(index)}
                                     style={styles.x}
                                     name="close"
                                     color={theme["color-primary-500"]}
@@ -130,7 +147,7 @@ export const ImageCarousel = ({
                     </Text>
                 </View>
             )}
-        </>
+        </View>
     )
 };
 

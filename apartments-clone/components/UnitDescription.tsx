@@ -1,11 +1,12 @@
 import { StyleSheet, View } from "react-native";
-import { Input, Text, Button, Divider } from "@ui-kitten/components";
+import { Button, Divider } from "@ui-kitten/components";
 
 import { ModalHeader } from "./ModalHeader";
 import { Row } from "./Row";
 import { theme } from "@/theme";
+import { DescriptionInput } from "./DescriptionInput";
 
-const maxChars = 7000;
+
 
 export const UnitDescription = ({
     field,
@@ -18,10 +19,7 @@ export const UnitDescription = ({
     setDescription: (field: string, values: any) => void;
     cancel?: () => void;
 }) => {
-    const handleChangeText = (text: string) => {
-        if (maxChars - text.length < 0) return;
-        setDescription(field, text);
-    };
+    
 
     const handleClearPressed = () => {
         setDescription(field, "");
@@ -35,19 +33,12 @@ export const UnitDescription = ({
                 onPress={cancel ? cancel : undefined}
             />
             <View style={styles.container}>
-                <Input
-                    style={styles.defaultMarginTop}
-                    multiline
-                    autoFocus
+                <DescriptionInput
+                    field={field}
+                    setDescription={setDescription}
                     value={description}
-                    numberOfLines={8}
-                    textAlignVertical="top"
-                    onChangeText={handleChangeText}
-                    placeholder="Tell us about your property :)"
+                    autoFocus
                 />
-                <Text appearance="hint" category="c1">
-                    {maxChars - description.length} Character Remaining
-                </Text>
 
                 <Divider style={[styles.defaultMarginTop, styles.divider]} />
 
