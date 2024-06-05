@@ -6,7 +6,7 @@ import { useRoute } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { Loading } from "@/components/Loading";
 import { Screen } from "@/components/Screen";
@@ -21,26 +21,34 @@ import { Select } from "@/components/Select";
 import { PressableInput } from "@/components/pressableInput";
 import { theme } from "@/theme";
 import { UnitPhotosPicker } from "@/components/UnitPhotosPicker";
+import { UnitAmenities } from "@/components/UnitAmenities";
+import { UnitDescription } from "@/components/UnitDescription";
+
+const photoStr = "photos";
+const amenitiesStr = "amenities";
+const descriptionStr = "description";
 
 export default function EditPropertyScreen(
     // { route }: { route: { params: { propertyID: number } } }
 ) {
     const route = useRoute();
+    const schrollViewRef = useRef<KeyboardAwareScrollView | null>(null);
     const property: UseQueryResult<{ data: Property }, unknown> = useQuery(
         "property",
         () => axios.get(endpoints.getPropertyById + route.params.propertyID)
     );
 
-    const [showUnitPhotos, setShowUnitPhotos] = useState(false);
+    const [showAlternateScreen, setShowAlternateScreen] = useState("");
     const [apartmentIndex, setApartmentIndex] = useState<number>(-1);
 
-    const handleShowUnitImages = (index: number) => {
-        setShowUnitPhotos(true);
+    const handleShowAlternateScreen = (index: number, name: string) => {
+        if (schrollViewRef.current) schrollViewRef.current.scrollToPosition(0, 0);  //Khi thêm các thuộc tính cho multiple, shcoll luôn trở về vị trí đầu
+        setShowAlternateScreen(name);
         setApartmentIndex(index);
     };
 
-    const handleHideUnitImages = () => {
-        setShowUnitPhotos(false);
+    const handleHideAlternateScreen = () => {
+        setShowAlternateScreen("");
         setApartmentIndex(-1);
     }
 
@@ -67,16 +75,16 @@ export default function EditPropertyScreen(
         }
     }
     return (
-        <KeyboardAwareScrollView bounces={false}>
+        <KeyboardAwareScrollView bounces={false} ref={(ref) => (schrollViewRef.current = ref)}>
             <Screen style={styles.container}>
-                {!showUnitPhotos && <Text category="h5" style={styles.header}>Basic Info</Text>}
+                {!showAlternateScreen && <Text category="h5" style={styles.header}>Basic Info</Text>}
                 <View>
                     <Formik
                         initialValues={{
                             unitType: property.data?.data.unitType,
                             apartments: initialApartments,
                         }}
-                        onSubmit={(values) => console.log(values)}
+                        onSubmit={(values) => console.log(JSON.stringify(values, null, 2))}
                     >
                         {({
                             values,
@@ -115,13 +123,35 @@ export default function EditPropertyScreen(
                                 setFieldValue("apartments", newApartments);
                             };
 
-                            if (showUnitPhotos && apartmentIndex > -1)
-                                return <UnitPhotosPicker 
-                                            cancel={handleHideUnitImages}
-                                            images={values.apartments[apartmentIndex].images}
-                                            setImages={setFieldValue}
-                                            field={`apartments[${apartmentIndex}].images`}
+                            if (showAlternateScreen === photoStr && apartmentIndex > -1)
+                                return (
+                                    <UnitPhotosPicker
+                                        cancel={handleHideAlternateScreen}
+                                        images={values.apartments[apartmentIndex].images}
+                                        setImages={setFieldValue}
+                                        field={`apartments[${apartmentIndex}].images`}
+                                    />
+                                );
+
+                            if (showAlternateScreen === amenitiesStr && apartmentIndex > -1)
+                                return (
+                                    <UnitAmenities
+                                        amenities={values.apartments[apartmentIndex].amenites}
+                                        setAmenites={setFieldValue}
+                                        field={`apartments[${apartmentIndex}].amenites`}
+                                        cancel={handleHideAlternateScreen}
+                                    />
+                                );
+
+                                if (showAlternateScreen === descriptionStr && apartmentIndex > -1)
+                                    return (
+                                        <UnitDescription
+                                            setDescription={setFieldValue}
+                                            description={values.apartments[apartmentIndex].description}
+                                            field={`apartments[${apartmentIndex}].description`}
+                                            cancel={handleHideAlternateScreen}
                                         />
+                                    );
 
                             return (
                                 <>
@@ -344,15 +374,15 @@ export default function EditPropertyScreen(
                                                     )}
                                                 </Row>
                                                 <Divider style={styles.divider} />
-                                                <TouchableOpacity onPress={() => handleShowUnitImages(index)}>
+                                                <TouchableOpacity onPress={() => handleShowAlternateScreen(index, photoStr)}>
                                                     <Text status="info">Unit Photos</Text>
                                                 </TouchableOpacity>
                                                 <Divider style={styles.divider} />
-                                                <TouchableOpacity onPress={() => console.log("show amenities boxes")}>
+                                                <TouchableOpacity onPress={() => handleShowAlternateScreen(index, amenitiesStr)}>
                                                     <Text status="info">Unit Amenities</Text>
                                                 </TouchableOpacity>
                                                 <Divider style={styles.divider} />
-                                                <TouchableOpacity onPress={() => console.log("show unit description")}>
+                                                <TouchableOpacity onPress={() => handleShowAlternateScreen(index, descriptionStr)}>
                                                     <Text status="info">Unit Description</Text>
                                                 </TouchableOpacity>
                                                 <Divider style={styles.divider} />
