@@ -2,6 +2,7 @@ import { Dimensions, Platform, StatusBar } from "react-native";
 
 export const LISTMARGIN = 10;
 export const WIDTH = Dimensions.get("screen").width - LISTMARGIN * 2;
+
 export const PHOTOS_STR = "photos";
 export const AMENITIES_STR = "amenities";
 export const DESCRIPTION_STR = "description";
@@ -19,7 +20,6 @@ export const HEADERHEIGHT = Platform.OS === "ios" ? iosHeight : androidHeight;
 const serverURL = "http://192.168.88.223:4000/api";
 const location = "/location";
 const user = "/user";
-const manager = "/manager";
 const property = "/property";
 const locationEndpoint = serverURL + location;
 const userEndpoint = serverURL + user;
@@ -36,4 +36,5 @@ export const endpoints = {
     getPropertyById: propertyEndpoint + "/",
     getPropertiesByUserID: propertyEndpoint + "/userid/",
     deleteProperty: propertyEndpoint + "/",
+    updateProperty: propertyEndpoint + "/update/",
 };

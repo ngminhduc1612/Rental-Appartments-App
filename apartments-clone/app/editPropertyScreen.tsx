@@ -5,6 +5,7 @@ import { useQuery, UseQueryResult } from "react-query";
 import { useRoute } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useState, useRef } from "react";
+import RNPhoneInput from "react-native-phone-number-input";
 
 import { Loading } from "@/components/Loading";
 import { Screen } from "@/components/Screen";
@@ -19,16 +20,24 @@ import { UnitAmenities } from "@/components/UnitAmenities";
 import { UnitDescription } from "@/components/UnitDescription";
 import { UnitsInput } from "@/components/editPropertySections/UnitsInput";
 import { GeneralPropertyInfo } from "@/components/editPropertySections/GeneralPropertyInfo";
+import { TempApartment } from "@/types/tempApartment";
+import { UtilitiesAndAmenities } from "@/components/editPropertySections/UtilitiesAndAmenities";
+import { petValues } from "@/constants/petValues";
+import { laundryValues } from "@/constants/laundryValues";
+import { ContactInfo } from "@/components/editPropertySections/ContactInfo";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function EditPropertyScreen(
     // { route }: { route: { params: { propertyID: number } } }
 ) {
     const route = useRoute();
+    const { user } = useAuth();
     const schrollViewRef = useRef<KeyboardAwareScrollView | null>(null);
     const property: UseQueryResult<{ data: Property }, unknown> = useQuery(
         "property",
         () => axios.get(endpoints.getPropertyById + route.params.propertyID)
     );
+    const phoneRef = useRef<RNPhoneInput>(null);
 
     const [showAlternateScreen, setShowAlternateScreen] = useState("");
     const [apartmentIndex, setApartmentIndex] = useState<number>(-1);
@@ -77,6 +86,16 @@ export default function EditPropertyScreen(
                             apartments: initialApartments,
                             description: "",
                             images: [],
+                            includedUtilities: [],
+                            petsAllowed: petValues[0],
+                            laundryType: laundryValues[0],
+                            parkingFee: "0",
+                            amenities: [],
+                            firstName: user?.firstName ? user.firstName : "",
+                            lastName: user?.lastName ? user.lastName : "",
+                            email: user ? user.email : "",
+                            phoneNumber: "",
+                            onMarket: false,
                         }}
                         onSubmit={(values) => console.log(JSON.stringify(values, null, 2))}
                     >
@@ -103,7 +122,7 @@ export default function EditPropertyScreen(
                                 return (
                                     <UnitAmenities
                                         amenities={values.apartments[apartmentIndex].amenities}
-                                        setAmenites={setFieldValue}
+                                        setAmenities={setFieldValue}
                                         field={`apartments[${apartmentIndex}].amenities`}
                                         cancel={handleHideAlternateScreen}
                                     />
@@ -136,7 +155,43 @@ export default function EditPropertyScreen(
                                         images={values.images}
                                         setFieldValue={setFieldValue}
                                     />
-                                    <Button onPress={() => handleSubmit()}>Submit</Button>
+                                    <UtilitiesAndAmenities
+                                        amenities={values.amenities}
+                                        handleChange={handleChange}
+                                        includedUtilities={values.includedUtilities}
+                                        laundryType={values.laundryType}
+                                        parkingFee={values.parkingFee}
+                                        petsAllowed={values.petsAllowed}
+                                        setFieldValue={setFieldValue}
+                                    />
+
+                                    <ContactInfo
+                                        email={values.email}
+                                        errors={errors}
+                                        firstName={values.firstName}
+                                        lastName={values.lastName}
+                                        handleChange={handleChange}
+                                        phoneNumber={values.phoneNumber}
+                                        phoneRef={phoneRef}
+                                        setFieldTouched={setFieldTouched}
+                                        touched={touched}
+                                    />
+                                    <Button
+                                        style={styles.largeMarginTop}
+                                        onPress={() => handleSubmit()}
+                                    >
+                                        Save
+                                    </Button>
+                                    <Button
+                                        appearance="ghost"
+                                        style={[styles.saveButton]}
+                                        onPress={() => {
+                                            setFieldValue("onMarket", true);
+                                            handleSubmit();
+                                        }}
+                                    >
+                                        Publish Listing
+                                    </Button>
                                 </>
                             )
                         }}
@@ -154,6 +209,10 @@ const styles = StyleSheet.create({
     header: {
         textAlign: "center",
         paddingVertical: 10,
+    },
+    saveButton: {
+        borderColor: theme["color-primary-500"],
+        marginVertical: 15,
     },
     input: {
         marginTop: 15,
@@ -186,5 +245,8 @@ const styles = StyleSheet.create({
     },
     removeUnitText: {
         fontWeight: "bold",
+    },
+    largeMarginTop: {
+        marginTop: 30,
     }
 })

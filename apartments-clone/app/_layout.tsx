@@ -13,7 +13,7 @@ import * as SecureStore from "expo-secure-store";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { AuthContext } from '@/context';
+import { AuthContext, LoadingContext } from '@/context';
 import { User } from '@/types/user';
 
 export {
@@ -37,13 +37,15 @@ export const linking = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const queryClient = new QueryClient();
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
-  const queryClient = new QueryClient();
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function RootLayout() {
   }
 
   return (
+    <LoadingContext.Provider value={{ loading, setLoading }}>
     <AuthContext.Provider value={{ user, setUser }}>
       <QueryClientProvider client={queryClient}>
         <ApplicationProvider {...eva} theme={theme}>
@@ -78,6 +81,7 @@ export default function RootLayout() {
         </ApplicationProvider>
       </QueryClientProvider>
     </AuthContext.Provider>
+    </LoadingContext.Provider>
   );
 }
 

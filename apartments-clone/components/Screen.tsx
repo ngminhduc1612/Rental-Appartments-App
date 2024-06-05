@@ -1,17 +1,21 @@
-import { SafeAreaView, StyleSheet, ViewStyle , Platform, StatusBar} from "react-native";
+import { SafeAreaView, StyleSheet, ViewStyle, Platform, StatusBar } from "react-native";
+
+import { Loading } from "./Loading";
+import { useLoading } from "@/hooks/useLoading";
 
 export const Screen = ({
     children,
     style,
-  }: {
+}: {
     children: any;
     style?: ViewStyle;
-  }) => {
+}) => {
+    const { loading } = useLoading();
     return <SafeAreaView
         style={[styles.container, style]}
     >
-        
-        {children}
+
+        {loading ? <Loading /> : children}
     </SafeAreaView>
 }
 

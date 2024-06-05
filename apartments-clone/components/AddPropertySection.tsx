@@ -7,8 +7,8 @@ import { PickerItem } from "react-native-woodpicker";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as yup from "yup";
 import axios from "axios";
-import { useMutation } from "react-query";
-import { useNavigation } from "@react-navigation/native";
+import { useMutation, useQueryClient } from "react-query";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 import { Screen } from "./Screen";
 import { ModalHeader } from "./ModalHeader";
@@ -30,6 +30,8 @@ export const AddPropertySection = () => {
     const navigation = useNavigation();
     const [searchingLocation, setSearchingLocation] = useState(false);
     const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
+    const queryClient = useQueryClient();
+
     const createProperty = useMutation("property", async (obj: CreateProperty) => {
         return axios.post<Property>(endpoints.createProperty, obj)
     }, {
@@ -37,7 +39,10 @@ export const AddPropertySection = () => {
             alert("Unable to create property")
         },
         onSuccess(data: { data: Property }) {
-            navigation.navigate("editPropertyScreen", { propertyID: data.data.ID })
+            queryClient.invalidateQueries("myproperties");
+            navigation.dispatch(
+                StackActions.replace("editPropertyScreen", { propertyID: data.data.ID })
+            )
         }
     }
     );
@@ -75,18 +80,23 @@ export const AddPropertySection = () => {
                 apartments: [],
             };
 
+            const availableOn = new Date();
             if (values.unitType === "multiple") {
                 for (let i of values.units) {
                     obj.apartments.push({
                         unit: i.unit,
                         bathrooms: i.bathrooms.value,
                         bedrooms: i.bedrooms.value,
+                        active: true,
+                        availableOn,
                     });
                 }
             } else {
                 obj.apartments.push({
                     bathrooms: values.unit.bathrooms.value,
                     bedrooms: values.unit.bedrooms.value,
+                    active: true,
+                    availableOn,
                 });
             }
 

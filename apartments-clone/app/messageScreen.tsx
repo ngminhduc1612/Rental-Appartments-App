@@ -21,7 +21,7 @@ export default function MessageScreen(
     const route = useRoute();
     const navigation = useNavigation();
     const { tour, propertyID } = route.params;
-    const index = properties.findIndex((i) => i.id === propertyID);
+    const index = properties.findIndex((i) => i.ID === propertyID);
     const property = properties[index];
     const { user } = useAuth();
 
@@ -38,7 +38,7 @@ export default function MessageScreen(
                             {getStateAbbreviation(property.state)} {property.zip}
                         </Text>
                         <Text category={"c1"}>
-                            ${property.rentLow.toLocaleString()} -{" "}
+                            ${property.rentLow.toLocaleString()} - {" "}
                             {property.rentHigh.toLocaleString()} | {property.bedroomLow} -{" "}
                             {property.bedroomHigh} Beds
                         </Text>
@@ -154,7 +154,7 @@ export default function MessageScreen(
                                         mode="date"
                                         onChange={(event: any, selectedDate?: Date) => {
                                             if (selectedDate) {
-                                                setFieldValue("showCalendar" ,false);
+                                                setFieldValue("showCalendar", false);
                                                 setFieldValue("date", selectedDate);
                                             }
                                         }}

@@ -12,6 +12,7 @@ export const Loading = () => {
   return (
     <View style={styles.container}>
       <LottieView
+        autoPlay
         ref={animation}
         source={require("../assets/lotties/Loading.json")}
         style={styles.lottie}
