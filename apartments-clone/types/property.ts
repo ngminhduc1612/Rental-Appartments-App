@@ -42,6 +42,7 @@ export type Property = {
     parkingFee?: number;
     firstName: string;
     lastName: string;
+    email: string;
 };
 
 export type CreateProperty = {

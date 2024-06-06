@@ -14,7 +14,7 @@ import (
 )
 
 func CreateProperty(ctx iris.Context) {
-	var propertyInput PropertyInput
+	var propertyInput CreatePropertyInput
 
 	err := ctx.ReadJSON(&propertyInput)
 	if err != nil {
@@ -43,9 +43,11 @@ func CreateProperty(ctx iris.Context) {
 		}
 
 		apartments = append(apartments, models.Apartment{
-			Unit:      element.Unit,
-			Bedrooms:  *element.Bedrooms,
-			Bathrooms: element.Bathrooms,
+			Unit:        element.Unit,
+			Bedrooms:    *element.Bedrooms,
+			Bathrooms:   element.Bathrooms,
+			AvailableOn: element.AvailableOn,
+			Active:      element.Active,
 		})
 	}
 
@@ -299,23 +301,25 @@ type InsertImages struct {
 	apartmentID *string
 }
 
-type PropertyInput struct {
-	UnitType     string           `json:"unitType" validate:"required,oneof=single multiple"`
-	PropertyType string           `json:"propertyType" validate:"required,max=256"`
-	Street       string           `json:"street" validate:"required,max=512"`
-	City         string           `json:"city" validate:"required,max=512"`
-	State        string           `json:"state" validate:"required,max=256"`
-	Zip          int              `json:"zip" validate:"required"`
-	Lat          float32          `json:"lat" validate:"required"`
-	Lng          float32          `json:"lng" validate:"required"`
-	UserID       uint             `json:"userID" validate:"required"`
-	Apartments   []ApartmentInput `json:"apartments" validate:"required,dive"`
+type CreatePropertyInput struct {
+	UnitType     string                 `json:"unitType" validate:"required,oneof=single multiple"`
+	PropertyType string                 `json:"propertyType" validate:"required,max=256"`
+	Street       string                 `json:"street" validate:"required,max=512"`
+	City         string                 `json:"city" validate:"required,max=512"`
+	State        string                 `json:"state" validate:"required,max=256"`
+	Zip          int                    `json:"zip" validate:"required"`
+	Lat          float32                `json:"lat" validate:"required"`
+	Lng          float32                `json:"lng" validate:"required"`
+	UserID       uint                   `json:"userID" validate:"required"`
+	Apartments   []CreateApartmentInput `json:"apartments" validate:"required,dive"`
 }
 
-type ApartmentInput struct {
-	Unit      string  `json:"unit" validate:"max=512"`
-	Bedrooms  *int    `json:"bedrooms" validate:"gte=0,max=6,required"` // con trỏ để có thể nhận gia trị bằng 0
-	Bathrooms float32 `json:"bathrooms" validate:"min=0.5,max=6.5,required"`
+type CreateApartmentInput struct {
+	Unit        string    `json:"unit" validate:"max=512"`
+	Bedrooms    *int      `json:"bedrooms" validate:"gte=0,max=6,required"` //con trỏ để chấp nhận giá trị bằng 0
+	Bathrooms   float32   `json:"bathrooms" validate:"min=0.5,max=6.5,required"`
+	Active      *bool     `json:"active" validate:"required"`
+	AvailableOn time.Time `json:"availableOn" validate:"required"`
 }
 
 type UpdatePropertyInput struct {

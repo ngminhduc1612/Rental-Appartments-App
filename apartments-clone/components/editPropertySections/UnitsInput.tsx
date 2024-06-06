@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Input, Toggle, Text, Divider } from "@ui-kitten/components";
 import { FormikErrors, FormikTouched } from "formik";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "react-native-modal-datetime-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { Row } from "../Row";
@@ -14,6 +14,7 @@ import { bathValues } from "@/constants/bathValues";
 import { AMENITIES_STR, DESCRIPTION_STR, PHOTOS_STR } from "@/constants";
 import { theme } from "@/theme";
 import { EditPropertyInitialValues } from "@/types/editPropertyInitialValues";
+import { PickerItem } from "react-native-woodpicker";
 
 export const UnitsInput = ({
     unitType,
@@ -70,17 +71,17 @@ export const UnitsInput = ({
         });
 
         setFieldValue("apartments", newApartments);
-        // if (newApartments.length > 1 && unitType !== "mutliple") {
-        //   setFieldValue("unitType", "multiple");
-        // }
+        if (newApartments.length > 1 && unitType !== "mutliple") {
+          setFieldValue("unitType", "multiple");
+        }
     };
 
     const removeUnit = (index: number) => {
         const newApartments = apartments.filter((i, idx) => idx !== index);
         setFieldValue("apartments", newApartments);
-        // if (newApartments.length === 1 && unitType !== "single") {
-        //   setFieldValue("unitType", "single");
-        // }
+        if (newApartments.length === 1 && unitType !== "single") {
+          setFieldValue("unitType", "single");
+        }
     };
 
     return (
@@ -137,7 +138,7 @@ export const UnitsInput = ({
                         <Row style={[styles.input, styles.unitRow]}>
                             <Select
                                 label="Beds"
-                                item={i.bedrooms}
+                                item={i.bedrooms as PickerItem}
                                 items={bedValues}
                                 onItemChange={(item) => {
                                     setFieldValue(
@@ -150,7 +151,7 @@ export const UnitsInput = ({
                             />
                             <Select
                                 label="Baths"
-                                item={i.bathrooms}
+                                item={i.bathrooms as PickerItem}
                                 items={bathValues}
                                 onItemChange={(item) => {
                                     setFieldValue(
@@ -192,7 +193,7 @@ export const UnitsInput = ({
                         <Row style={[styles.input, styles.unitRow]}>
                             <Input
                                 style={styles.smallInput}
-                                value={i.sqFt}
+                                value={i.rent}
                                 onChangeText={handleChange(
                                     `apartments[${index}].rent`
                                 )}
@@ -284,24 +285,22 @@ export const UnitsInput = ({
                                 value={i.availableOn.toDateString()}
                                 label="Available On"
                             />
-                            {i.showCalendar && (
-                                <DateTimePicker
-                                    value={i.availableOn}
-                                    mode="date"
-                                    onChange={(event: any, selectedDate?: Date) => {
-                                        if (selectedDate) {
-                                            setFieldValue(
-                                                `apartments[${index}].showCalendar`,
-                                                false
-                                            );
-                                            setFieldValue(
-                                                `apartments[${index}].availableOn`,
-                                                selectedDate
-                                            );
-                                        }
-                                    }}
-                                />
-                            )}
+                            <DateTimePicker
+                                isVisible={i.showCalendar}
+                                mode="date"
+                                onConfirm={(seclectedDate: Date) => {
+                                    if (seclectedDate) {
+                                        setFieldValue(
+                                            `apartments[${index}].availableOn`,
+                                            seclectedDate
+                                        );
+                                        setFieldValue(`apartments[${index}].showCalendar`, false)
+                                    }
+                                }}
+                                onCancel={() =>
+                                    setFieldValue(`apartments[${index}].showCalendar`, false)
+                                }
+                            />
                         </Row>
                         <Divider style={styles.divider} />
                         <TouchableOpacity onPress={() => handleShowAlternateScreen(index, PHOTOS_STR)}>

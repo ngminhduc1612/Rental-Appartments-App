@@ -8,9 +8,12 @@ import { EditPropertyInitialValues } from "../../types/editPropertyInitialValues
 import { theme } from "../../theme";
 
 export const ContactInfo = ({
+    name,
     firstName,
     lastName,
     email,
+    website,
+    countryCode,
     phoneNumber,
     touched,
     errors,
@@ -18,9 +21,12 @@ export const ContactInfo = ({
     handleChange,
     phoneRef,
 }: {
+    name: string;
     firstName: string;
     lastName: string;
     email: string;
+    website: string;
+    countryCode: string;
     phoneNumber: string;
     touched: FormikTouched<EditPropertyInitialValues>;
     errors: FormikErrors<EditPropertyInitialValues>;
@@ -44,6 +50,13 @@ export const ContactInfo = ({
             <Text category="h6" style={styles.header}>
                 Contact Info
             </Text>
+            <Input
+                style={styles.input}
+                value={name}
+                onChangeText={handleChange("name")}
+                placeholder="Your Property Name"
+                label="Property Name"
+            />
             <Input
                 style={styles.input}
                 value={firstName}
@@ -98,14 +111,36 @@ export const ContactInfo = ({
                 status={touched.email && errors.email ? "danger" : "basic"}
             />
 
+            <Input
+                style={styles.input}
+                value={website}
+                onChangeText={handleChange("website")}
+                placeholder="Your Website"
+                autoCapitalize="none"
+                keyboardType="web-search"
+                textContentType="URL"
+                autoCorrect={false}
+                label="Website"
+                onBlur={() => setFieldTouched("website")}
+                caption={touched.website && errors.website ? errors.website : undefined}
+                status={touched.website && errors.website ? "danger" : "basic"}
+            />
+
             <PhoneInput
                 onChangeText={handleChange("phoneNumber")}
                 phoneNumber={phoneNumber}
                 style={styles.input}
                 phoneRef={phoneRef}
+                error={
+                    touched.phoneNumber && errors.phoneNumber
+                        ? errors.phoneNumber
+                        : undefined
+                }
+                countryCode={countryCode}
+                onBlur={() => setFieldTouched("phoneNumber")}
             />
 
-            <Divider style={[styles.divider, styles.largeMarginTop]}/>
+            <Divider style={[styles.divider, styles.largeMarginTop]} />
         </View>
     )
 };
