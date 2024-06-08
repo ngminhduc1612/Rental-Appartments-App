@@ -168,11 +168,7 @@ export const PricingAndFloorPlanSection = ({
                                 {i.sqFt.toLocaleString("en-US")}
                             </Text>
                             <Text category={"c1"} style={styles.availableText}>
-                                {new Date().toLocaleDateString("en", {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "numeric",
-                                })}
+                                {new Date(i.availableOn).toLocaleDateString()}
                             </Text>
                         </Row>
                         <Divider style={styles.divider} />

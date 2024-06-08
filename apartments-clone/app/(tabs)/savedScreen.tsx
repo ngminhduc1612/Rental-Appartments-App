@@ -203,5 +203,5 @@ const styles = StyleSheet.create({
     },
     card: {
         marginVertical: 10,
-    }
+    },
 });

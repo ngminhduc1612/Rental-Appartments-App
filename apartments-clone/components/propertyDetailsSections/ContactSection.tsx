@@ -9,7 +9,7 @@ import { Property } from "@/types/property";
 import { callPhoneNumber } from "@/utils/callPhoneNumber";
 import { openURL } from "@/utils/openURL";
 
-const formatPhoneNumber = (str: string) => {
+const formatPhoneNumber = (str: string, callingCode: string) => {
     // Bước 1: Làm sạch chuỗi đầu vào bằng cách loại bỏ tất cả các ký tự không phải số
     let cleaned = ("" + str).replace(/\D/g, "");
 
@@ -18,12 +18,8 @@ const formatPhoneNumber = (str: string) => {
 
     // Bước 3: Kiểm tra nếu khớp thành công
     if (match) {
-        // Loại bỏ mã mở rộng đã khớp và định dạng số điện thoại
-        // Bước 4: Xác định mã quốc tế (nếu có)
-        let intlCode = match[1] === "84" ? "+84" : (match[1] === "0" ? "0" : "");
-
         // Bước 5: Tạo chuỗi số điện thoại đã định dạng
-        return [intlCode, "(", match[2], ") ", match[3], " ", match[4]].join("");
+        return [`+${callingCode} `, "(", match[2], ") ", match[3], " ", match[4]].join("");
     }
 
     // Bước 6: Trả về thông báo mặc định nếu đầu vào không phải là số điện thoại hợp lệ
@@ -47,24 +43,25 @@ export const ContactSection = ({ property }: { property: Property }) => {
                         size={16}
                     />
                     <Text category={"c1"} status={"info"} style={styles.rowText}>
-                        {formatPhoneNumber(property.phoneNumber)}
+                        {formatPhoneNumber(property.phoneNumber, property.callingCode)}
                     </Text>
                 </Row>
             </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() =>
-                    {
-                        openURL(property.website)
+            {property.website ? (
+                <TouchableOpacity
+                    onPress={() => {
+                        if (property.website) openURL(property.website)
                     }
-                }
-            >
-                <Row style={styles.row}>
-                    <MaterialCommunityIcons name="web" color={theme["color-info-500"]} size={16}/>
-                    <Text category={"c1"} status={"info"} style={styles.rowText}>
-                        View Property Website
-                    </Text>
-                </Row>
-            </TouchableOpacity>
+                    }
+                >
+                    <Row style={styles.row}>
+                        <MaterialCommunityIcons name="web" color={theme["color-info-500"]} size={16} />
+                        <Text category={"c1"} status={"info"} style={styles.rowText}>
+                            View Property Website
+                        </Text>
+                    </Row>
+                </TouchableOpacity>
+            ) : null}
             <Row style={styles.buttonRow}>
                 <Button
                     style={styles.button}

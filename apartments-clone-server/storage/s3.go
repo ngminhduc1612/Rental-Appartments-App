@@ -15,8 +15,8 @@ import (
 )
 
 var S3Client *s3.Client
-var bucketName = "dhapartments-clone"
-var bucketURL = "https://" + bucketName + ".s3.ap-southeast-2.amazonaws.com/"
+var BucketName = "dhapartments-clone"
+var bucketURL = "https://" + BucketName + ".s3.ap-southeast-2.amazonaws.com/"
 
 func InitializeS3() {
 	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
@@ -44,7 +44,7 @@ func UploadBase64Image(base64ImageSrc string, name string) map[string]string {
 
 	uploader := manager.NewUploader(S3Client)
 	_, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
-		Bucket: &bucketName,
+		Bucket: &BucketName,
 		Key:    &name,
 		Body:   decoder,
 	})

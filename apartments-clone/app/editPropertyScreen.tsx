@@ -46,12 +46,12 @@ export default function EditPropertyScreen(
 
     const [showAlternateScreen, setShowAlternateScreen] = useState("");
     const [apartmentIndex, setApartmentIndex] = useState<number>(-1);
-    const {setLoading} = useLoading();
+    const { setLoading } = useLoading();
     const navigation = useNavigation();
     const queryClient = useQueryClient();
 
     const editProperty = useMutation(
-        (obj : EditPropertyObj) =>
+        (obj: EditPropertyObj) =>
             axios.patch(`${endpoints.updateProperty}${route.params.propertyID}`, obj),
         {
             onMutate: () => {
@@ -291,14 +291,18 @@ export default function EditPropertyScreen(
                                         Save
                                     </Button>
                                     <Button
-                                        appearance="ghost"
+                                        appearance={"ghost"}
                                         style={[styles.saveButton]}
                                         onPress={() => {
-                                            setFieldValue("onMarket", true);
+                                            if (propertyData?.onMarket)
+                                                setFieldValue("onMarket", false);
+                                            else setFieldValue("onMarket", true);
                                             handleSubmit();
                                         }}
                                     >
-                                        Publish Listing
+                                        {propertyData?.onMarket
+                                            ? "Unpublish Listing"
+                                            : "Publish Listing"}
                                     </Button>
                                 </>
                             )

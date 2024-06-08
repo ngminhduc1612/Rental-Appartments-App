@@ -28,5 +28,5 @@ const styles = StyleSheet.create({
     signUpButton: {
         marginVertical: 10,
         borderColor: theme["color-primary-500"],
-      },
+    },
 });

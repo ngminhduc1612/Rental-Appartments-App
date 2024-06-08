@@ -17,17 +17,21 @@ androidHeight += androidNotch;
 
 export const HEADERHEIGHT = Platform.OS === "ios" ? iosHeight : androidHeight;
 
-const serverURL = "http://10.29.152.148:4000/api";
+const serverURL = "http://192.168.88.223:4000/api";
 const location = "/location";
 const user = "/user";
 const property = "/property";
+const apartment = "/apartment";
+const review = "/review";
 const locationEndpoint = serverURL + location;
 const userEndpoint = serverURL + user;
 const propertyEndpoint = serverURL + property;
+const apartmentEndpoint = serverURL + apartment;
+const reviewEndpoint = serverURL + review;
 
 export const endpoints = {
     autoComplete: locationEndpoint + "/autocomplete",
-    search: locationEndpoint + "/search", 
+    search: locationEndpoint + "/search",
     register: userEndpoint + "/register",
     login: userEndpoint + "/login",
     forgotPassword: userEndpoint + "/forgotpassword",
@@ -35,6 +39,10 @@ export const endpoints = {
     createProperty: propertyEndpoint + "/create",
     getPropertyById: propertyEndpoint + "/",
     getPropertiesByUserID: propertyEndpoint + "/userid/",
+    getPropertiesByBoundingBox: propertyEndpoint + "/search",
     deleteProperty: propertyEndpoint + "/",
     updateProperty: propertyEndpoint + "/update/",
+    getApartmentsByPropertyID: apartmentEndpoint + "/property/",
+    updateApartments: apartmentEndpoint + "/property/",
+    createReview: reviewEndpoint + "/property/",
 };

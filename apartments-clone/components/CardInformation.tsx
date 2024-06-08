@@ -12,32 +12,60 @@ import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
 export const CardInformation = ({ property, myProperty }: { property: Property, myProperty?: boolean }) => {
     const navigation = useNavigation();
 
+    const manageUnitsNavigation = () =>
+        navigation.navigate("manageUnitsScreen", { propertyID: property.ID });
+
+    const emailNavigation = () =>
+        navigation.navigate("messageScreen", { propertyID: property.ID });
+
+    const editPropertyNavigation = () =>
+        navigation.navigate("editPropertyScreen", { propertyID: property.ID });
+
+    const getLowAndHighText = (type: "rent" | "bedroom") => {
+        if (type === "rent") {
+            if (property.rentLow === property.rentHigh)
+                return `$${property.rentLow.toLocaleString()}`;
+            return `$${property.rentLow.toLocaleString()} - ${property.rentHigh.toLocaleString()}`;
+        }
+
+        let bedLow = property.bedroomLow === 0 ? "Studio" : property.bedroomLow;
+        if (property.bedroomLow === property.bedroomHigh) return bedLow;
+
+        return `${bedLow} - ${property.bedroomHigh} Beds`;
+    };
+
     const DefaultInfo = () => (
         <>
             {property?.rentLow && property?.rentHigh && (
                 <Row style={styles.rowJustification}>
-                    <Text category="s1">${property.rentLow.toLocaleString()} - ${property.rentHigh.toLocaleString()}</Text>
+                    <Text category="s1">{getLowAndHighText("rent")}</Text>
                     <MaterialCommunityIcons name='heart-outline' color={theme["color-primary-500"]} size={24} />
                 </Row>
             )}
             <Text category={"c1"}>
-                {property.bedroomLow === 0 ? "Studio" : property.bedroomLow} -{" "}
-                {property.bedroomHigh} Beds
+                {getLowAndHighText("bedroom")}
             </Text>
-            <Text category={"c1"} style={styles.defaultMarginTop}>
-                {property.name}
-            </Text>
+            {property?.name ? (
+                <Text category={"c1"} style={styles.defaultMarginTop}>
+                    {property.name}
+                </Text>
+            ) : null}
             <Text category={"c1"}>
                 {property.street}
             </Text>
             <Text category={"c1"}>
                 {property.city}, {property.state} {property.zip}
             </Text>
-            {property?.tags ? <Text category={"c1"} style={styles.defaultMarginTop}>
-                {property.tags.map((tag, index) =>
-                    index === property.tags.length - 1 ? tag : '${tag}, '
-                )}
-            </Text> : null}
+            {property?.includedUtilities && property.includedUtilities.length > 0 ? (
+                <Text category={"c1"} style={styles.defaultMarginTop}>
+                    {property.includedUtilities.map((tag, index) => {
+                        return property.includedUtilities &&
+                            index === property.includedUtilities.length - 1
+                            ? tag
+                            : `${tag}, `;
+                    })}
+                </Text>
+            ) : null}
             <Row
                 style={[
                     styles.defaultMarginTop,
@@ -53,7 +81,7 @@ export const CardInformation = ({ property, myProperty }: { property: Property, 
                         styles.button,
                     ]}
                     size="small"
-                    onPress={() => navigation.navigate("messageScreen", { propertyID: property.ID })}
+                    onPress={emailNavigation}
                 >
                     Email
                 </Button>
@@ -85,7 +113,7 @@ export const CardInformation = ({ property, myProperty }: { property: Property, 
                         {property.apartments.length > 1 ? "Units" : "Unit"}
                     </Text>
                 ) : null}
-                <Button appearance="ghost" status="info" size="small">
+                <Button appearance="ghost" status="info" size="small" onPress={manageUnitsNavigation}>
                     Manage Units
                 </Button>
             </Row>
@@ -102,7 +130,7 @@ export const CardInformation = ({ property, myProperty }: { property: Property, 
                 <Text category="s2">
                     Listing: {property?.onMarket ? "On Market" : "Off Market"}
                 </Text>
-                <Button size="small" appearance="ghost" status="info">
+                <Button size="small" appearance="ghost" status="info" onPress={editPropertyNavigation}>
                     {property?.onMarket ? "Deactivate" : "Reactivate"}
                 </Button>
             </Row>
