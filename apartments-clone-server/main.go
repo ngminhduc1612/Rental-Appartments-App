@@ -37,6 +37,8 @@ func main() {
 		user.Post("/login", routes.Login)
 		user.Post("/forgotpassword", routes.ForgotPassword)
 		user.Post("/resetpassword", resetTokenVerifierMiddleware, routes.Resetpassword)
+		user.Get("/{id}/properties/saved", routes.GetUserSavedProperties)
+		user.Patch("/{id}/properties/saved", routes.AlterUserSavedProperties)
 	}
 	property := app.Party("/api/property")
 	{

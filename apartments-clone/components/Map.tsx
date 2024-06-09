@@ -12,7 +12,8 @@ import { Button } from "@ui-kitten/components";
 import { getPropertiesInArea } from "@/data/property";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { endpoints } from "@/constants";
+import { endpoints, queryKeys } from "@/constants";
+import { useSearchPropertiesQuery } from "@/hooks/queries/useSearchPropertiesQuery";
 
 //used to persist the region if search area from the map
 let mapRegion: Region | undefined = undefined;
@@ -38,23 +39,7 @@ export const Map = ({
     );
     const navigation = useNavigation();
 
-    const searchProperties = useQuery(
-        "searchproperties",
-        () => {
-            if (boundingBox.length > 0) {
-
-                return axios.post(`${endpoints.getPropertiesByBoundingBox}`, {
-                    latLow: boundingBox[0],
-                    latHigh: boundingBox[1],
-                    lngLow: boundingBox[2],
-                    lngHigh: boundingBox[3],
-                });
-            }
-        },
-        {
-            enabled: false,
-        }
-    );
+    const searchProperties = useSearchPropertiesQuery(boundingBox);
     useEffect(() => {
         if (location === "Map Area") return;
 

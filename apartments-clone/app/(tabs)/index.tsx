@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { Screen } from "@/components/Screen";
 import { Card } from "@/components/Card";
-import { HEADERHEIGHT, endpoints } from "@/constants";
+import { HEADERHEIGHT, endpoints, queryKeys } from "@/constants";
 import { AnimatedListHeader } from "@/components/AnimatedListHeader";
 import { getPropertiesInArea } from "@/data/property";
 import { Map } from "@/components/Map";
@@ -16,6 +16,7 @@ import MapView from "react-native-maps";
 import { useRoute } from "@react-navigation/native";
 import { Property } from "@/types/property";
 import { Text } from "@ui-kitten/components";
+import { useSearchPropertiesQuery } from "@/hooks/queries/useSearchPropertiesQuery";
 
 export default function SearchScreen(
     // { route }: { route: { params: SearchScreenParams } }
@@ -26,29 +27,15 @@ export default function SearchScreen(
     const [scrollAnimation] = useState(new Animated.Value(0));
     const mapRef = useRef<MapView | null>(null)
     const [location, setLocation] = useState<string | undefined>(undefined);
-    const searchProperties = useQuery(
-        "searchproperties",
-        () => {
-            if (route.params.boundingBox) {
-                const boundingBox = [
-                    Number(route.params.boundingBox[0]),
-                    Number(route.params.boundingBox[1]),
-                    Number(route.params.boundingBox[2]),
-                    Number(route.params.boundingBox[3]),
-                ];
-
-                return axios.post(`${endpoints.getPropertiesByBoundingBox}`, {
-                    latLow: boundingBox[0],
-                    latHigh: boundingBox[1],
-                    lngLow: boundingBox[2],
-                    lngHigh: boundingBox[3],
-                });
-            }
-        },
-        {
-            enabled: false,
-        }
-    );
+    let boungdingBox: number[] = [];
+    if (route.params?.boungdingBox){
+        boungdingBox = [
+            Number(route.params.boundingBox[0]),
+            Number(route.params.boundingBox[1]),
+            Number(route.params.boundingBox[2]),
+            Number(route.params.boundingBox[3]),
+        ]}
+    const searchProperties = useSearchPropertiesQuery(boungdingBox);
 
     useEffect(() => {
         if (route && route.params) {
@@ -72,15 +59,15 @@ export default function SearchScreen(
                 mapShown={mapShown}
                 location={location ? location : "Find a Location"}
                 availableProperties={
-                    searchProperties.data?.data
-                        ? searchProperties.data?.data.length
+                    searchProperties.data
+                        ? searchProperties.data.length
                         : undefined
                 }
             />
             {
                 mapShown ? (
                     <Map
-                        properties={searchProperties.data?.data}
+                        properties={searchProperties?.data ? searchProperties.data : []}
                         mapRef={mapRef}
                         location={location ? location : "Find a Location"}
                         setLocation={setLocation}
@@ -97,7 +84,7 @@ export default function SearchScreen(
                     />
                 ) : (
                     <>
-                        {searchProperties.data && searchProperties.data?.data.length > 0 ? (
+                        {searchProperties.data && searchProperties.data?.length > 0 ? (
                             <Animated.FlatList
                                 onScroll={Animated.event([
                                     {
@@ -113,7 +100,7 @@ export default function SearchScreen(
                                 contentContainerStyle={{ paddingTop: HEADERHEIGHT - 20 }}
                                 bounces={false}
                                 scrollEventThrottle={16}
-                                data={searchProperties.data?.data}
+                                data={searchProperties?.data}
                                 keyExtractor={(item) => item.ID.toString()}
                                 showsVerticalScrollIndicator={false}
                                 renderItem={({ item }) => (

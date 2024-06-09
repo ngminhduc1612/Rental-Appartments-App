@@ -39,7 +39,7 @@ export default function EditPropertyScreen(
     const schrollViewRef = useRef<KeyboardAwareScrollView | null>(null);
     const property: UseQueryResult<{ data: Property }, unknown> = useQuery(
         "property",
-        () => axios.get(endpoints.getPropertyById + route.params.propertyID)
+        () => axios.get(endpoints.getPropertyByID + route.params.propertyID)
     );
     const phoneRef = useRef<RNPhoneInput>(null);
     const propertyData = property.data?.data;

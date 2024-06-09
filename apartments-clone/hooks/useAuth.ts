@@ -20,7 +20,17 @@ export const useAuth = () => {
         setUser(null);
         SecureStore.deleteItemAsync("user");
         queryClient.clear();
-    }
+    };
 
-    return { user, login, logout };
+    const setSavedProperties = (savedProperties: number[]) => {
+        if (user) {
+            const newUser = {...user};
+            newUser.savedProperties = savedProperties;
+            setUser(newUser);
+            let stringUser = JSON.stringify(newUser);
+            SecureStore.setItemAsync("user", stringUser);
+        }
+    };
+
+    return { user, login, logout, setSavedProperties };
 }

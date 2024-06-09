@@ -2,7 +2,7 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
 import { useState } from "react";
 import LottieView from "lottie-react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { Screen } from "@/components/Screen";
 import { Row } from "@/components/Row";
@@ -12,13 +12,26 @@ import { Card } from "@/components/Card";
 import { Property } from "@/types/property";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
 import { useAuth } from "@/hooks/useAuth";
+import { useSavedPropertiesQuery } from "@/hooks/queries/useSavedPropertiesQuery";
+import { Loading } from "@/components/Loading";
 
 export default function SavedScreen() {
     const [activeIndex, setActiveIndex] = useState<number>(0); // Đánh dấu button nào đang active, thay đổi màu
-    const likedProperties = properties;
+    const savedProperties = useSavedPropertiesQuery();
     const contactedProperties = undefined;
     const applicationProperties = undefined;
     const navigation = useNavigation();
+
+    // Refetch nếu properties không xuất hiện sau khi đăng nhập
+    useFocusEffect(() => {
+        if (
+            !savedProperties.data &&
+            user &&
+            user?.savedProperties &&
+            user.savedProperties.length > 0
+        )
+            savedProperties.refetch();
+    })
 
     const { user } = useAuth();  //Tài khoản người sử dụng
 
@@ -30,6 +43,8 @@ export default function SavedScreen() {
     const handleButtonPress = (index: number) => {
         setActiveIndex(index);
     };
+
+    if (savedProperties.isLoading) return <Loading />;
 
     const getBodyText = (heading: string, subHeading: string) => {
         return (
@@ -58,7 +73,8 @@ export default function SavedScreen() {
 
     const getBody = () => {
         if (activeIndex === 0) {
-            if (likedProperties) return getPropertiesFlatList(likedProperties);
+            if (savedProperties?.data && savedProperties.data.length > 0)
+                return getPropertiesFlatList(savedProperties.data); 
             return (
                 <>
                     <LottieView

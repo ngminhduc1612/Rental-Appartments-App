@@ -7,21 +7,38 @@ import { Property } from "@/types/property";
 import { theme } from "@/theme";
 import { Row } from "../Row";
 import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
+import { useAuth } from "@/hooks/useAuth";
+import { useSavePropertyMutation } from "@/hooks/mutations/useSavePropertyMutation";
 
 export const PropertyHeaderSection = ({
     property,
 }: {
     property: Property
 }) => {
-    const [heartIconName, setHeartIconName] = useState<"heart" | "heart-outline">(
-        "heart-outline"
-    );
+    const { user, setSavedProperties } = useAuth();
+    const saveProperty = useSavePropertyMutation();
+
+    const alterUsersSavedProperties = (
+        propertyID: number,
+        type: "add" | "remove"
+    ) => {
+        let newProperties: number[] = user?.savedProperties
+            ? [...user.savedProperties]
+            : [];
+
+        if (type === "add") newProperties.push(propertyID);
+        else newProperties = newProperties.filter((i) => i !== propertyID);
+
+        setSavedProperties(newProperties);
+    };
 
     const handleHeartPress = () => {
-        if (heartIconName === "heart") {
-            return setHeartIconName("heart-outline");
-        }
-        setHeartIconName("heart");
+        if (!user) return alert("Please sign up or sign in to save properties");
+        let op: "add" | "remove" = "add";
+        if (property?.liked) op = "remove";
+
+        alterUsersSavedProperties(property.ID, op);
+        saveProperty.mutate({ propertyID: property.ID, op });
     };
 
     const shareItem = async () => {
@@ -40,7 +57,7 @@ export const PropertyHeaderSection = ({
                 {property.name}
             </Text>
         ) : null}
-        <Row style={[styles.containerRow,styles.defaultMarginTop]}>
+        <Row style={[styles.containerRow, styles.defaultMarginTop]}>
             <View>
                 <Text category={"c1"}>{property.street}</Text>
                 <Text category={"c1"}>{`${property.city}, ${getStateAbbreviation(
@@ -59,7 +76,7 @@ export const PropertyHeaderSection = ({
                 />
                 <MaterialCommunityIcons
                     onPress={handleHeartPress}
-                    name={heartIconName}
+                    name={property?.liked ? "heart" : "heart-outline"}
                     size={30}
                     color={theme["color-primary-500"]}
                 />

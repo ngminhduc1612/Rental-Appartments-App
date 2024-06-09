@@ -9,7 +9,7 @@ import axios from "axios";
 
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
-import { endpoints } from "@/constants";
+import { endpoints, queryKeys } from "@/constants";
 import { theme } from "@/theme";
 import { useAuth } from "@/hooks/useAuth";
 import SignUpOrSignInScreen from "./signUpOrSignInScreen";
@@ -34,7 +34,7 @@ export default function ReviewScreen(
                 setLoading(true);
             },
             onSuccess: () => {
-                queryClient.invalidateQueries("selectedproperty");
+                queryClient.invalidateQueries(queryKeys.selectedProperty);
             },
             onError: () => {
                 alert("Unable to create review");

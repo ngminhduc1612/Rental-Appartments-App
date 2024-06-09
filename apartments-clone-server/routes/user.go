@@ -4,11 +4,14 @@ import (
 	"apartments-clone-server/models"
 	"apartments-clone-server/storage"
 	"apartments-clone-server/utils"
+	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/kataras/iris/v12"
 	jsonWT "github.com/kataras/iris/v12/middleware/jwt"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/exp/slices"
 )
 
 func Register(ctx iris.Context) {
@@ -52,10 +55,11 @@ func Register(ctx iris.Context) {
 	storage.DB.Create(&newUser)
 
 	ctx.JSON(iris.Map{
-		"ID":        newUser.ID,
-		"firstName": newUser.FirstName,
-		"lastName":  newUser.LastName,
-		"email":     newUser.Email,
+		"ID":              newUser.ID,
+		"firstName":       newUser.FirstName,
+		"lastName":        newUser.LastName,
+		"email":           newUser.Email,
+		"savedProperties": newUser.SavedProperties,
 	})
 }
 
@@ -93,10 +97,11 @@ func Login(ctx iris.Context) {
 	}
 
 	ctx.JSON(iris.Map{
-		"ID":        existingUser.ID,
-		"firstName": existingUser.FirstName,
-		"lastName":  existingUser.LastName,
-		"email":     existingUser.Email,
+		"ID":              existingUser.ID,
+		"firstName":       existingUser.FirstName,
+		"lastName":        existingUser.LastName,
+		"email":           existingUser.Email,
+		"savedProperties": existingUser.SavedProperties,
 	})
 }
 
@@ -187,6 +192,102 @@ func Resetpassword(ctx iris.Context) {
 	})
 }
 
+func GetUserSavedProperties(ctx iris.Context) {
+	params := ctx.Params()
+	id := params.Get("id")
+
+	user := getUserByID(id, ctx)
+	if user == nil {
+		return
+	}
+
+	var properties []models.Property
+	var savedProperties []uint
+	unmarshalErr := json.Unmarshal(user.SavedProperties, &savedProperties)
+	if unmarshalErr != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	propertiesExist := storage.DB.Where("id IN ?", savedProperties).Find(&properties)
+
+	if propertiesExist.Error != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	ctx.JSON(properties)
+}
+
+func AlterUserSavedProperties(ctx iris.Context) {
+	params := ctx.Params()
+	id := params.Get("id")
+
+	user := getUserByID(id, ctx)
+	if user == nil {
+		return
+	}
+
+	var req AlterSavedPropertiesInput
+	err := ctx.ReadJSON(&req)
+	if err != nil {
+		utils.HandleValidationErrors(err, ctx)
+		return
+	}
+
+	propertyID := strconv.FormatUint(uint64(req.PropertyID), 10)
+
+	validPropertyID := GetPropertyAndAssociationsByPropertyID(propertyID, ctx)
+
+	if validPropertyID == nil {
+		return
+	}
+
+	var savedProperties []uint
+	var unMarshalledProperties []uint
+
+	if user.SavedProperties != nil {
+		unmarshalErr := json.Unmarshal(user.SavedProperties, &unMarshalledProperties)
+
+		if unmarshalErr != nil {
+			utils.CreateInternalServerError(ctx)
+			return
+		}
+	}
+
+	if req.Op == "add" {
+		if !slices.Contains(unMarshalledProperties, req.PropertyID) {
+			savedProperties = append(unMarshalledProperties, req.PropertyID)
+		} else {
+			savedProperties = unMarshalledProperties
+		}
+	} else if req.Op == "remove" && len(unMarshalledProperties) > 0 {
+		for _, propertyID := range unMarshalledProperties {
+			if req.PropertyID != propertyID {
+				savedProperties = append(savedProperties, propertyID)
+			}
+		}
+	}
+
+	marshalledProperties, marshalErr := json.Marshal(savedProperties)
+
+	if marshalErr != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	user.SavedProperties = marshalledProperties
+
+	rowsUpdated := storage.DB.Model(&user).Updates(user)
+
+	if rowsUpdated.Error != nil {
+		utils.CreateInternalServerError(ctx)
+		return
+	}
+
+	ctx.StatusCode(iris.StatusNoContent)
+}
+
 func getAndHandleUserExists(user *models.User, email string) (exists bool, err error) {
 	userExistQuery := storage.DB.Where("email = ?", strings.ToLower(email)).Limit(1).Find(&user)
 
@@ -212,6 +313,23 @@ func hashAndSaltPassword(password string) (hashedPassword string, err error) {
 	return string(bytes), nil
 }
 
+func getUserByID(id string, ctx iris.Context) *models.User {
+	var user models.User
+	userExist := storage.DB.Where("id = ?", id).Find(&user)
+
+	if userExist.Error != nil {
+		utils.CreateInternalServerError(ctx)
+		return nil
+	}
+
+	if userExist.RowsAffected == 0 {
+		utils.CreateError(iris.StatusNotFound, "Not Found", "User not found", ctx)
+		return nil
+	}
+
+	return &user
+}
+
 type RegisterUserInput struct {
 	FirstName string `json:"firstName" validate:"required,max=256"`
 	LastName  string `json:"lastName" validate:"required,max=256"`
@@ -230,4 +348,9 @@ type EmailRegisteredInput struct {
 
 type ResetPasswordInput struct {
 	Password string `json:"password" validate:"required,min=8,max=256"`
+}
+
+type AlterSavedPropertiesInput struct {
+	PropertyID uint   `json:"propertyID" validate:"required"`
+	Op         string `json:"op" validate:"required"`
 }

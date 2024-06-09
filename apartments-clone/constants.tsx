@@ -28,6 +28,7 @@ const userEndpoint = serverURL + user;
 const propertyEndpoint = serverURL + property;
 const apartmentEndpoint = serverURL + apartment;
 const reviewEndpoint = serverURL + review;
+const savedEndpoint = (id: number) => `${userEndpoint}/${id}/properties/saved`
 
 export const endpoints = {
     autoComplete: locationEndpoint + "/autocomplete",
@@ -37,7 +38,7 @@ export const endpoints = {
     forgotPassword: userEndpoint + "/forgotpassword",
     resetPassword: userEndpoint + "/resetpassword",
     createProperty: propertyEndpoint + "/create",
-    getPropertyById: propertyEndpoint + "/",
+    getPropertyByID: propertyEndpoint + "/",
     getPropertiesByUserID: propertyEndpoint + "/userid/",
     getPropertiesByBoundingBox: propertyEndpoint + "/search",
     deleteProperty: propertyEndpoint + "/",
@@ -45,4 +46,18 @@ export const endpoints = {
     getApartmentsByPropertyID: apartmentEndpoint + "/property/",
     updateApartments: apartmentEndpoint + "/property/",
     createReview: reviewEndpoint + "/property/",
+    getSavedPropertiesByUserID: savedEndpoint,
+    alterSavedPropertiesByUserID: savedEndpoint,
 };
+
+export const queryKeys = {
+    contactedProperties: "contactedProperties",
+    searchProperties: "searchProperties",
+    selectedProperty: "selectedProperty",
+    savedProperties: "savedProperties",
+    myProperties: "myProperties",
+    editProperty: "editProperty",
+    apartments: "apartments",
+    conversations: "conversations",
+    selectedConversation: "selectedConversation",
+  };
