@@ -15,38 +15,15 @@ import { FacebookButton } from "../components/FacebookButton";
 import { AppleButton } from "../components/AppleButton";
 import { OrDivider } from "../components/OrDivider";
 import { PasswordInput } from "../components/PasswordInput";
-import { registerUser } from "@/services/user";
 import { useAuth } from "@/hooks/useAuth";
-import { Loading } from "@/components/Loading";
 
 export default function SignUpScreen() {
-    const navigation = useNavigation();
-    const { login } = useAuth();
+    const { nativeRegister } = useAuth();
 
     const [___, ____, fbPromptAsync] = Facebook.useAuthRequest({
         clientId: "1221973065450344",
         redirectUri: "https://auth.expo.io/@ducnguyen161/apartments-clone",
     });
-
-    const nativeRegister = useMutation(
-        async (values: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            password: string;
-        }) => {
-            const user = await registerUser(
-                values.firstName,
-                values.lastName,
-                values.email,
-                values.password
-            );
-            if (user) {
-                login(user);
-                navigation.goBack();
-            }
-        }
-    );
 
     const facebookRegister = useMutation(async () => {
         const response = await fbPromptAsync();
@@ -59,7 +36,6 @@ export default function SignUpScreen() {
         }
     });
 
-    if (nativeRegister.isLoading) return <Loading />
 
 
     return (
@@ -89,8 +65,8 @@ export default function SignUpScreen() {
                                     "Your password must have 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 special character."
                                 ),
                         })}
-                        onSubmit={(values) => {
-                            nativeRegister.mutate(values);
+                        onSubmit={async (values) => {
+                            await nativeRegister(values);
                         }}
                     >
                         {({

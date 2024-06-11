@@ -6,11 +6,11 @@ import LottieView from "lottie-react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Screen } from "@/components/Screen";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import SignUpOrSignInScreen from "./signUpOrSignInScreen";
 import axios from "axios";
 import { Property } from "@/types/property";
-import { endpoints } from "@/constants";
+import { endpoints, queryKeys } from "@/constants";
 import { Loading } from "@/components/Loading";
 import { Card } from "@/components/Card";
 import { ModalHeader } from "@/components/ModalHeader";
@@ -18,9 +18,9 @@ import { theme } from "@/theme";
 
 export default function MyPropertiesScreen() {
     const navigation = useNavigation();
-    const { user } = useAuth();
+    const { user } = useUser();
     const properties = useQuery(
-        "myproperties",
+        queryKeys.myProperties,
         async () => {
             if (user)
                 return axios.get<Property[]>(

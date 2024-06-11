@@ -3,48 +3,66 @@ import { Button, Text } from "@ui-kitten/components";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useMutation } from "react-query";
-import axios from "axios";
 
 import { Screen } from "../components/Screen";
 import { ModalHeader } from "../components/ModalHeader";
 import { PasswordInput } from "../components/PasswordInput";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Loading } from "@/components/Loading";
-import { endpoints } from "@/constants";
+import { useLoading } from "@/hooks/useLoading";
+import { resetPassword } from "@/services/user";
 
 export default function ResetPasswordScreen(
   // { route, }: { route: { params: { token: string } } }
 ) {
-  const navigation = useNavigation();
   const route = useRoute();
+  const { navigate } = useNavigation();
+  const { setLoading } = useLoading();
 
-  const resetPassword = useMutation(
-    async (password: string) => {
-      return axios.post(
-        endpoints.resetPassword,
-        { password },
-        {
-          headers: {
-            Authorization: `Bearer ${route.params.token}`,
-          },
-        }
+  const handleSubmit = async (values: {
+    password: string;
+    passwordRepeat: string;
+  }) => {
+    try {
+      setLoading(true);
+      const passwordReset = await resetPassword(
+        values.password,
+        route.params.token
       );
-    },
-    {
-      onSuccess() {
-        navigation.navigate("signInScreen");
-      },
-      onError(error: any) {
-        if (error.response.staus === 401) 
-          return alert("Invalid or Expired Token");
-
-        alert("Unable to reset password.");
-      },
+      if (passwordReset) navigate("signInScreen");
+    } catch (error) {
+      alert("Unable to reset password");
+    } finally {
+      setLoading(false);
     }
-  );
+  };
+  // const navigation = useNavigation();
 
-  if (resetPassword.isLoading) return <Loading />;
+  // const resetPassword = useMutation(
+  //   async (password: string) => {
+  //     return axios.post(
+  //       endpoints.resetPassword,
+  //       { password },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${route.params.token}`,
+  //         },
+  //       }
+  //     );
+  //   },
+  //   {
+  //     onSuccess() {
+  //       navigation.navigate("signInScreen");
+  //     },
+  //     onError(error: any) {
+  //       if (error.response.staus === 401) 
+  //         return alert("Invalid or Expired Token");
+
+  //       alert("Unable to reset password.");
+  //     },
+  //   }
+  // );
+
+  // if (resetPassword.isLoading) return <Loading />;
 
   return (
     <KeyboardAwareScrollView bounces={false}>
@@ -71,9 +89,7 @@ export default function ResetPasswordScreen(
               .oneOf([yup.ref("password"), null], "Passwords don't match")
               .required("Required"),
           })}
-          onSubmit={(values) => {
-            resetPassword.mutate(values.password);
-          }}
+          onSubmit={handleSubmit}
         >
           {({
             values,

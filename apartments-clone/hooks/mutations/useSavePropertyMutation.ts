@@ -1,7 +1,7 @@
 import { useQueryClient, useMutation } from "react-query";
 import axios from "axios";
 
-import { useAuth } from "../useAuth";
+import { useUser } from "../useUser";
 import { endpoints, queryKeys } from "../../constants";
 import { Property } from "../../types/property";
 
@@ -19,7 +19,7 @@ const saveOrUnsaveProperty = (
     );
 
 export const useSavePropertyMutation = () => {
-    const { user } = useAuth();
+    const { user } = useUser();
     const queryClient = useQueryClient();
 
     return useMutation(

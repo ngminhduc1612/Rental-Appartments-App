@@ -11,29 +11,25 @@ import axios from "axios";
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
 import LottieView from "lottie-react-native";
-import { Loading } from "@/components/Loading";
-import { endpoints } from "@/constants";
+
+import { forgotPassword } from "@/services/user";
+import { useLoading } from "@/hooks/useLoading";
 
 export default function ForgotPasswordScreen() {
     const [emailSent, setEmailSent] = useState(false);
 
-    const forgotPassword = useMutation(
-        async (email: string) => {
-            return axios.post(endpoints.forgotPassword, {
-                email
-            });
-        },
-        {
-            onSuccess(data) {
-                if (data.data.emailSent) setEmailSent(true);
-            },
-            onError(error: any) {
-                alert(error?.response.data.detail);
-            },
+    const { setLoading } = useLoading();
+    const handleSubmit = async (values: { email: string }) => {
+        try {
+            setLoading(true);
+            const emailSent = await forgotPassword(values.email);
+            if (emailSent?.emailSent) setEmailSent(true);
+        } catch (error) {
+            alert("Error placing email");
+        } finally {
+            setLoading(false)
         }
-    );
-
-    if (forgotPassword.isLoading) return <Loading />;
+    }
 
     return (
         <KeyboardAwareScrollView bounces={false}>
@@ -47,7 +43,7 @@ export default function ForgotPasswordScreen() {
                         <Text>
                             An email containing instructions about how to change your Password
                             has been sent to you. Please check your junk mail or spam section
-                            if you do not se an email
+                            if you do not see an email
                         </Text>
                         <LottieView
                             autoPlay
@@ -71,9 +67,7 @@ export default function ForgotPasswordScreen() {
                             validationSchema={yup.object().shape({
                                 email: yup.string().email().required("Your email is required."),
                             })}
-                            onSubmit={(values) => {
-                                forgotPassword.mutate(values.email)
-                            }}
+                            onSubmit={handleSubmit}
                         >
                             {({
                                 values,

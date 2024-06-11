@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 
 import { endpoints, queryKeys } from "@/constants";
 import { Property } from "@/types/property";
-import { useAuth } from "../useAuth";
+import { useUser } from "../useUser";
 
 const fetchProperties = async (userID?: number): Promise<Property[]> => {
     if (!userID) return [];
@@ -19,7 +19,7 @@ const fetchProperties = async (userID?: number): Promise<Property[]> => {
 }
 
 export const useSavedPropertiesQuery = () => {
-    const { user } = useAuth();
+    const { user } = useUser();
 
     return useQuery(queryKeys.savedProperties, () => fetchProperties(user?.ID), {
         retry: false,

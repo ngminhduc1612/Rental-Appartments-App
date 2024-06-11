@@ -4,7 +4,6 @@ import { Text, Input, Button } from "@ui-kitten/components";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "react-query";
 
 import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
@@ -13,24 +12,12 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { AppleButton } from "@/components/AppleButton";
 import { PasswordInput } from "@/components/PasswordInput";
 import { OrDivider } from "@/components/OrDivider";
-import { loginUser } from "@/services/user";
 import { useAuth } from "@/hooks/useAuth";
-import { Loading } from "@/components/Loading";
 
 
 export default function SignInScreen() {
     const navigation = useNavigation();
-    const { login } = useAuth();
-
-    const nativeLogin = useMutation(async (values: { email: string; password: string }) => {
-        const user = await loginUser(values.email, values.password);
-        if (user) {
-            login(user);
-            navigation.goBack();
-        }
-    })
-
-    if (nativeLogin.isLoading) return <Loading />;
+    const { nativeLogin } = useAuth();
 
     return (
         <KeyboardAwareScrollView bounces={false}>
@@ -51,8 +38,8 @@ export default function SignInScreen() {
                             email: yup.string().email().required("Your email is required."),
                             password: yup.string().required("A password is required."),
                         })}
-                        onSubmit={(values) => {
-                            nativeLogin.mutate(values);
+                        onSubmit={async (values) => {
+                            await nativeLogin(values);
                         }}
                     >
                         {({

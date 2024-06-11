@@ -11,7 +11,7 @@ import { properties } from "@/data/property";
 import { Card } from "@/components/Card";
 import { Property } from "@/types/property";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import { useSavedPropertiesQuery } from "@/hooks/queries/useSavedPropertiesQuery";
 import { Loading } from "@/components/Loading";
 
@@ -25,7 +25,7 @@ export default function SavedScreen() {
     // Refetch nếu properties không xuất hiện sau khi đăng nhập
     useFocusEffect(() => {
         if (
-            !savedProperties.data &&
+            (!savedProperties.data || savedProperties.data.length === 0) &&
             user &&
             user?.savedProperties &&
             user.savedProperties.length > 0
@@ -33,7 +33,7 @@ export default function SavedScreen() {
             savedProperties.refetch();
     })
 
-    const { user } = useAuth();  //Tài khoản người sử dụng
+    const { user } = useUser();  //Tài khoản người sử dụng
 
     const getButtonAppearance = (buttonIndex: number) => {
         if (activeIndex === buttonIndex) return "filled";

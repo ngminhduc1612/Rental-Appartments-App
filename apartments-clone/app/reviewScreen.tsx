@@ -11,7 +11,7 @@ import { Screen } from "@/components/Screen";
 import { ModalHeader } from "@/components/ModalHeader";
 import { endpoints, queryKeys } from "@/constants";
 import { theme } from "@/theme";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import SignUpOrSignInScreen from "./signUpOrSignInScreen";
 import { Row } from "@/components/Row";
 import { TouchableStarsContainer } from "@/components/TouchableStarsContainer";
@@ -22,7 +22,7 @@ export default function ReviewScreen(
     // route: { params: { propertyID: number; propertyName: string } }
 ) {
     const route = useRoute();
-    const { user } = useAuth();
+    const { user } = useUser();
     const navigation = useNavigation();
     const queryClient = useQueryClient();
     const { setLoading } = useLoading();

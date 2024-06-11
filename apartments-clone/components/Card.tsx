@@ -9,7 +9,7 @@ import axios from "axios";
 import { Property } from "@/types/property";
 import { ImageCarousel } from "./ImageCarousel";
 import { CardInformation } from "./CardInformation";
-import { LISTMARGIN } from "@/constants";
+import { LISTMARGIN, queryKeys } from "@/constants";
 import { theme } from "@/theme";
 import { endpoints } from "@/constants";
 import { useLoading } from "@/hooks/useLoading";
@@ -36,17 +36,17 @@ export const Card = ({
         {
             onMutate: async () => {
                 setLoading(true)
-                await queryClient.cancelQueries("myproperties");
+                await queryClient.cancelQueries(queryKeys.myProperties);
 
                 const prevProperties: { data: Property[] } | undefined =
-                    queryClient.getQueryData("myproperties");
+                    queryClient.getQueryData(queryKeys.myProperties);
 
                 if (prevProperties) {
                     const filtered = prevProperties.data.filter(
                         (i) => i.ID !== property.ID
                     );
 
-                    queryClient.setQueryData("myproperties", filtered);
+                    queryClient.setQueryData(queryKeys.myProperties, filtered);
                 }
 
                 return { prevProperties };
@@ -55,13 +55,13 @@ export const Card = ({
                 setLoading(false);
                 if (context?.prevProperties)
                     queryClient.setQueryData(
-                        "myproperties",
+                        queryKeys.myProperties,
                         context?.prevProperties.data
                     );
             },
             onSettled: () => {
                 setLoading(false);
-                queryClient.invalidateQueries("myproperties");
+                queryClient.invalidateQueries(queryKeys.myProperties);
             }
         }
     );

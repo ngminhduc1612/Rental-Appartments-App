@@ -11,7 +11,7 @@ import { PickerItem } from "react-native-woodpicker";
 
 import { Loading } from "@/components/Loading";
 import { Screen } from "@/components/Screen";
-import { AMENITIES_STR, DESCRIPTION_STR, PHOTOS_STR, endpoints } from "@/constants";
+import { AMENITIES_STR, DESCRIPTION_STR, PHOTOS_STR, endpoints, queryKeys } from "@/constants";
 import { Property } from "@/types/property";
 import { Formik } from "formik";
 import { bedValues } from "@/constants/bedValues";
@@ -27,7 +27,7 @@ import { UtilitiesAndAmenities } from "@/components/editPropertySections/Utiliti
 import { petValues } from "@/constants/petValues";
 import { laundryValues } from "@/constants/laundryValues";
 import { ContactInfo } from "@/components/editPropertySections/ContactInfo";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
 import { useLoading } from "@/hooks/useLoading";
 
@@ -35,7 +35,7 @@ export default function EditPropertyScreen(
     // { route }: { route: { params: { propertyID: number } } }
 ) {
     const route = useRoute();
-    const { user } = useAuth();
+    const { user } = useUser();
     const schrollViewRef = useRef<KeyboardAwareScrollView | null>(null);
     const property: UseQueryResult<{ data: Property }, unknown> = useQuery(
         "property",
@@ -62,7 +62,7 @@ export default function EditPropertyScreen(
                 alert("Error updating property");
             },
             onSuccess() {
-                queryClient.invalidateQueries("myproperties");
+                queryClient.invalidateQueries(queryKeys.myProperties);
                 setLoading(false);
                 navigation.goBack();
             }

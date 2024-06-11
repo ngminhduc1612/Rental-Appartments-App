@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { endpoints, queryKeys } from "../../constants";
 
 import { Property } from "../../types/property";
-import { useAuth } from "../useAuth";
+import { useUser } from "../useUser";
 
 const fetchProperties = async (boundingBox?: number[]): Promise<Property[]> => {
     if (!boundingBox) return [];
@@ -20,7 +20,7 @@ const fetchProperties = async (boundingBox?: number[]): Promise<Property[]> => {
 };
 
 export const useSearchPropertiesQuery = (boundingBox: number[]) => {
-    const { user } = useAuth();
+    const { user } = useUser();
     const queryInfo = useQuery(
         queryKeys.searchProperties,
         () => fetchProperties(boundingBox),

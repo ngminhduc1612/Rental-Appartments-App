@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 
 import { endpoints, queryKeys } from "../../constants";
 import { Property } from "../../types/property";
-import { useAuth } from "../useAuth";
+import { useUser } from "../useUser";
 
 const fetchProperty = async (propertyID: number): Promise<Property> => {
   const response = await axios.get(`${endpoints.getPropertyByID}${propertyID}`);
@@ -13,7 +13,7 @@ const fetchProperty = async (propertyID: number): Promise<Property> => {
 };
 
 export const useSelectedPropertyQuery = (propertyID: number) => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const queryInfo = useQuery(queryKeys.selectedProperty, () =>
     fetchProperty(propertyID)
   );

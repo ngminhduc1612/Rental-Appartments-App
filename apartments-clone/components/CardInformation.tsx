@@ -8,12 +8,12 @@ import { Property } from "@/types/property"
 import { theme } from '../theme'
 import { callPhoneNumber } from "@/utils/callPhoneNumber";
 import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import { useSavePropertyMutation } from "@/hooks/mutations/useSavePropertyMutation";
 
 export const CardInformation = ({ property, myProperty }: { property: Property, myProperty?: boolean }) => {
     const navigation = useNavigation();
-    const { user, setSavedProperties } = useAuth();
+    const { user, setSavedProperties } = useUser();
     const saveProperty = useSavePropertyMutation();
 
     const alterUsersSavedProperties = (

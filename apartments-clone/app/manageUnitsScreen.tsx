@@ -9,7 +9,7 @@ import * as yup from "yup";
 
 import { Screen } from "@/components/Screen";
 import { Apartment, EditApartment } from "@/types/apartment";
-import { endpoints } from "@/constants";
+import { endpoints, queryKeys } from "@/constants";
 import { bedValues } from "@/constants/bedValues";
 import { bathValues } from "@/constants/bathValues";
 import { MangeUnitsCard } from "@/components/ManageUnitsCard";
@@ -45,7 +45,7 @@ export default function ManageUnitsScreen(
                 alert("Error updating apartments");
             },
             onSuccess() {
-                queryClient.invalidateQueries("myproperties");
+                queryClient.invalidateQueries(queryKeys.myProperties);
                 setLoading(false);
                 navigation.goBack();
             }

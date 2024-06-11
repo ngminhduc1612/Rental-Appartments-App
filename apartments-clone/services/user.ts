@@ -13,14 +13,13 @@ export const registerUser = async (
     password: string
 ) => {
     try {
-        const {data} : DataRes = await axios.post(endpoints.register, {
+        const { data }: DataRes = await axios.post(endpoints.register, {
             email,
             password,
             firstName,
             lastName
         });
-        if (data) return data;
-        return null
+        return data;
     } catch (error) {
         handleError(error)
     }
@@ -28,13 +27,44 @@ export const registerUser = async (
 
 export const loginUser = async (email: string, password: string) => {
     try {
-        const {data} : DataRes = await axios.post(endpoints.login, {
+        const { data }: DataRes = await axios.post(endpoints.login, {
             email,
             password,
         });
-        if (data) return data;
-        return null
+        return data;
     } catch (error) {
         handleError(error);
+    }
+};
+
+export const forgotPassword = async (email: string) => {
+    try {
+        const { data } = await axios.post<{ emailSent: boolean }>(
+            endpoints.forgotPassword,
+            { email }
+        );
+        return data
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+export const resetPassword = async (password: string, token: string) => {
+    try {
+        const { data } = await axios.post(
+            endpoints.resetPassword,
+            { password },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        return data;
+    } catch (error: any) {
+        if (error.response.status === 401) return alert("Invalid or Expired Token");
+
+        alert("Unable to reset password.");
     }
 };
