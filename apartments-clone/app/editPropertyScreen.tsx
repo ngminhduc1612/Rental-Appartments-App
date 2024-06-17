@@ -12,7 +12,7 @@ import { PickerItem } from "react-native-woodpicker";
 import { Loading } from "@/components/Loading";
 import { Screen } from "@/components/Screen";
 import { AMENITIES_STR, DESCRIPTION_STR, PHOTOS_STR, endpoints, queryKeys } from "@/constants";
-import { Property } from "@/types/property";
+import { EditPropertyObj, Property } from "@/types/property";
 import { Formik } from "formik";
 import { bedValues } from "@/constants/bedValues";
 import { bathValues } from "@/constants/bathValues";
@@ -30,6 +30,8 @@ import { ContactInfo } from "@/components/editPropertySections/ContactInfo";
 import { useUser } from "@/hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
 import { useLoading } from "@/hooks/useLoading";
+import { useEditPropertyQuery } from "@/hooks/queries/useEditPropertyQuery";
+import { useEditPropertyMutation } from "@/hooks/mutations/useEditPropertyMutatoion";
 
 export default function EditPropertyScreen(
     // { route }: { route: { params: { propertyID: number } } }
@@ -37,37 +39,13 @@ export default function EditPropertyScreen(
     const route = useRoute();
     const { user } = useUser();
     const schrollViewRef = useRef<KeyboardAwareScrollView | null>(null);
-    const property: UseQueryResult<{ data: Property }, unknown> = useQuery(
-        "property",
-        () => axios.get(endpoints.getPropertyByID + route.params.propertyID)
-    );
+    const property = useEditPropertyQuery(route.params.propertyID);
     const phoneRef = useRef<RNPhoneInput>(null);
-    const propertyData = property.data?.data;
+    const propertyData = property.data;
+    const editProperty = useEditPropertyMutation();
 
     const [showAlternateScreen, setShowAlternateScreen] = useState("");
     const [apartmentIndex, setApartmentIndex] = useState<number>(-1);
-    const { setLoading } = useLoading();
-    const navigation = useNavigation();
-    const queryClient = useQueryClient();
-
-    const editProperty = useMutation(
-        (obj: EditPropertyObj) =>
-            axios.patch(`${endpoints.updateProperty}${route.params.propertyID}`, obj),
-        {
-            onMutate: () => {
-                setLoading(true);
-            },
-            onError(err) {
-                setLoading(false);
-                alert("Error updating property");
-            },
-            onSuccess() {
-                queryClient.invalidateQueries(queryKeys.myProperties);
-                setLoading(false);
-                navigation.goBack();
-            }
-        }
-    )
 
     const handleShowAlternateScreen = (index: number, name: string) => {
         if (schrollViewRef.current) schrollViewRef.current.scrollToPosition(0, 0);  //Khi thêm các thuộc tính cho multiple, shcoll luôn trở về vị trí đầu
@@ -195,7 +173,7 @@ export default function EditPropertyScreen(
                                 website: values.website,
                             };
 
-                            editProperty.mutate(obj);
+                            editProperty.mutate({obj, propertyID: route.params.propertyID});
                         }}
                     >
                         {({
@@ -453,25 +431,3 @@ const validationSchema = yup.object().shape({
     website: yup.string().url(),
     onMarket: yup.boolean().required(),
 });
-
-type EditPropertyObj = {
-    ID?: number;
-    unitType?: "single" | "multiple";
-    apartments: TempApartment[];
-    description: string;
-    images: string[];
-    includedUtilities: string[];
-    petsAllowed: string;
-    laundryType: string;
-    parkingFee: number;
-    amenities: string[];
-    name: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    callingCode?: string;
-    countryCode?: string;
-    phoneNumber: string;
-    website: string;
-    onMarket: boolean;
-};

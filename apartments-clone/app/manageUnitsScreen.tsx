@@ -1,58 +1,58 @@
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import axios from "axios";
 import { View, StyleSheet } from "react-native";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { Formik } from "formik";
 import { Button, Divider } from "@ui-kitten/components";
 import * as yup from "yup";
 
 import { Screen } from "@/components/Screen";
-import { Apartment, EditApartment } from "@/types/apartment";
-import { endpoints, queryKeys } from "@/constants";
+import { EditApartment } from "@/types/apartment";
 import { bedValues } from "@/constants/bedValues";
 import { bathValues } from "@/constants/bathValues";
 import { MangeUnitsCard } from "@/components/ManageUnitsCard";
 import { theme } from "@/theme";
-import { useLoading } from "@/hooks/useLoading";
 import { PickerItem } from "react-native-woodpicker";
+import { useApartmentsQuery } from "@/hooks/queries/useApartmentsQuery";
+import { useEditApartmentMutation } from "@/hooks/mutations/useEditApartmentsMutation";
 
 export default function ManageUnitsScreen(
     // {route,} : {route: {params: {properyID: number}}}
 ) {
-    const queryClient = useQueryClient();
-    const navigation = useNavigation();
-    const { setLoading } = useLoading();
     const route = useRoute();
-    const apartments = useQuery<{ data: Apartment[] }>("apartments", () =>
-        axios.get(
-            `${endpoints.getApartmentsByPropertyID}${route.params.propertyID}`
-        )
-    );
+    // const queryClient = useQueryClient();
+    // const navigation = useNavigation();
+    // const { setLoading } = useLoading();
+    // const apartments = useQuery<{ data: Apartment[] }>("apartments", () =>
+    //     axios.get(
+    //         `${endpoints.getApartmentsByPropertyID}${route.params.propertyID}`
+    //     )
+    // );
+    const apartments = useApartmentsQuery(route.params.propertyID);
 
-    const editApartments = useMutation(
-        (obj: EditApartment[]) =>
-            axios.patch(
-                `${endpoints.updateApartments}${route.params.propertyID}`,
-                obj
-            ),
-        {
-            onMutate: () => {
-                setLoading(true);
-            },
-            onError(err) {
-                setLoading(false);
-                alert("Error updating apartments");
-            },
-            onSuccess() {
-                queryClient.invalidateQueries(queryKeys.myProperties);
-                setLoading(false);
-                navigation.goBack();
-            }
-        }
-    )
+    const editApartments = useEditApartmentMutation();
+    // const editApartments = useMutation(
+    //     (obj: EditApartment[]) =>
+    //         axios.patch(
+    //             `${endpoints.updateApartments}${route.params.propertyID}`,
+    //             obj
+    //         ),
+    //     {
+    //         onMutate: () => {
+    //             setLoading(true);
+    //         },
+    //         onError(err) {
+    //             setLoading(false);
+    //             alert("Error updating apartments");
+    //         },
+    //         onSuccess() {
+    //             queryClient.invalidateQueries(queryKeys.myProperties);
+    //             setLoading(false);
+    //             navigation.goBack();
+    //         }
+    //     }
+    // )
 
-    const apartmentData = apartments.data?.data;
+    const apartmentData = apartments.data;
     const initialApartments: EditApartment[] = [];
     if (apartmentData) {
         for (let i of apartmentData) {
@@ -83,7 +83,11 @@ export default function ManageUnitsScreen(
                             i.sqFt = Number(i.sqFt);
                         }
 
-                        editApartments.mutate(values.apartments);
+                        // editApartments.mutate(values.apartments);
+                        editApartments.mutate({
+                            obj: values.apartments,
+                            propertyID: route.params.propertyID,
+                        });
                     }}
                 >
                     {({

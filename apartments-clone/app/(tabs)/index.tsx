@@ -27,15 +27,15 @@ export default function SearchScreen(
     const [scrollAnimation] = useState(new Animated.Value(0));
     const mapRef = useRef<MapView | null>(null)
     const [location, setLocation] = useState<string | undefined>(undefined);
-    let boungdingBox: number[] = [];
-    if (route.params?.boungdingBox){
-        boungdingBox = [
+    let boundingBox: number[] = [];
+    if (route.params?.boundingBox)
+        boundingBox = [
             Number(route.params.boundingBox[0]),
             Number(route.params.boundingBox[1]),
             Number(route.params.boundingBox[2]),
             Number(route.params.boundingBox[3]),
-        ]}
-    const searchProperties = useSearchPropertiesQuery(boungdingBox);
+        ];
+    const searchProperties = useSearchPropertiesQuery(boundingBox);
 
     useEffect(() => {
         if (route && route.params) {

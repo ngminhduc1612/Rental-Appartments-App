@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "372999171110",
+    "project_id": "apartmentsclone-ba5ae",
+    "storage_bucket": "apartmentsclone-ba5ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:372999171110:android:4458cc145ab495eea34ae7",
+        "android_client_info": {
+          "package_name": "com.ngminhduc1612.apartmentsclone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtzPMXC3WCJe8AnaQlSNidVMBdj-hCrXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

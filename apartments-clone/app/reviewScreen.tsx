@@ -16,6 +16,8 @@ import SignUpOrSignInScreen from "./signUpOrSignInScreen";
 import { Row } from "@/components/Row";
 import { TouchableStarsContainer } from "@/components/TouchableStarsContainer";
 import { useLoading } from "@/hooks/useLoading";
+import { CreateReview } from "@/types/review";
+import { useCreateReviewMutation } from "@/hooks/mutations/useCreateReviewMutation";
 
 
 export default function ReviewScreen(
@@ -27,24 +29,25 @@ export default function ReviewScreen(
     const queryClient = useQueryClient();
     const { setLoading } = useLoading();
 
-    const createReview = useMutation((values: CreateReview) =>
-        axios.post(`${endpoints.createReview}${route.params.propertyID}`, values),
-        {
-            onMutate: () => {
-                setLoading(true);
-            },
-            onSuccess: () => {
-                queryClient.invalidateQueries(queryKeys.selectedProperty);
-            },
-            onError: () => {
-                alert("Unable to create review");
-            },
-            onSettled: () => {
-                setLoading(false);
-                navigation.goBack();
-            }
-        }
-    )
+    const createReview = useCreateReviewMutation();
+    // const createReview = useMutation((values: CreateReview) =>
+    //     axios.post(`${endpoints.createReview}${route.params.propertyID}`, values),
+    //     {
+    //         onMutate: () => {
+    //             setLoading(true);
+    //         },
+    //         onSuccess: () => {
+    //             queryClient.invalidateQueries(queryKeys.selectedProperty);
+    //         },
+    //         onError: () => {
+    //             alert("Unable to create review");
+    //         },
+    //         onSettled: () => {
+    //             setLoading(false);
+    //             navigation.goBack();
+    //         }
+    //     }
+    // )
 
     if (!user) return <SignUpOrSignInScreen />
 
@@ -75,7 +78,10 @@ export default function ReviewScreen(
                                 userID: user.ID,
                             };
 
-                            createReview.mutate(createReviewObj);
+                            createReview.mutate({
+                                propertyID: route.params.propertyID,
+                                review: createReviewObj,
+                            });
                         }}
                     >
                         {({
@@ -169,10 +175,3 @@ const styles = StyleSheet.create({
     },
     cancelButton: { borderColor: theme["color-primary-500"] },
 });
-
-type CreateReview = {
-    userID: number;
-    title: string;
-    body: string;
-    stars: number;
-}

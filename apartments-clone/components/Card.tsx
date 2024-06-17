@@ -3,16 +3,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Button } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
 
 import { Property } from "@/types/property";
 import { ImageCarousel } from "./ImageCarousel";
 import { CardInformation } from "./CardInformation";
-import { LISTMARGIN, queryKeys } from "@/constants";
+import { LISTMARGIN } from "@/constants";
 import { theme } from "@/theme";
-import { endpoints } from "@/constants";
-import { useLoading } from "@/hooks/useLoading";
+import { useDeletePropertyMutation } from "@/hooks/mutations/useDeletePropertyMutation";
 
 export const Card = ({
     property,
@@ -25,46 +22,11 @@ export const Card = ({
     myProperty?: boolean;
     style?: ViewStyle;
 }) => {
-    const {setLoading} = useLoading();
-    const queryClient = useQueryClient();
     const navigation = useNavigation();
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
-    const deleteProperty = useMutation(
-        () => axios.delete(`${endpoints.deleteProperty}${property.ID}`),
-        {
-            onMutate: async () => {
-                setLoading(true)
-                await queryClient.cancelQueries(queryKeys.myProperties);
-
-                const prevProperties: { data: Property[] } | undefined =
-                    queryClient.getQueryData(queryKeys.myProperties);
-
-                if (prevProperties) {
-                    const filtered = prevProperties.data.filter(
-                        (i) => i.ID !== property.ID
-                    );
-
-                    queryClient.setQueryData(queryKeys.myProperties, filtered);
-                }
-
-                return { prevProperties };
-            },
-            onError: (err, newTodo, context) => {
-                setLoading(false);
-                if (context?.prevProperties)
-                    queryClient.setQueryData(
-                        queryKeys.myProperties,
-                        context?.prevProperties.data
-                    );
-            },
-            onSettled: () => {
-                setLoading(false);
-                queryClient.invalidateQueries(queryKeys.myProperties);
-            }
-        }
-    );
+    const deleteProperty = useDeletePropertyMutation();
 
     const handleEditProperty = () => {
         navigation.navigate("editPropertyScreen", { propertyID: property.ID });
@@ -72,7 +34,9 @@ export const Card = ({
     };
 
     const handleDeleteProperty = () => {
-        deleteProperty.mutate();
+        deleteProperty.mutate({
+            propertyID: property.ID,
+        });
         closeModal();
     };
 

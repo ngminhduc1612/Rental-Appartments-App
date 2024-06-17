@@ -1,6 +1,5 @@
 import { StyleSheet, FlatList, View } from "react-native";
 import { Text, Button } from "@ui-kitten/components";
-import { useQuery } from "react-query";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,25 +7,16 @@ import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Screen } from "@/components/Screen";
 import { useUser } from "@/hooks/useUser";
 import SignUpOrSignInScreen from "./signUpOrSignInScreen";
-import axios from "axios";
-import { Property } from "@/types/property";
-import { endpoints, queryKeys } from "@/constants";
 import { Loading } from "@/components/Loading";
 import { Card } from "@/components/Card";
 import { ModalHeader } from "@/components/ModalHeader";
 import { theme } from "@/theme";
+import { useMyPropertiesQuery } from "@/hooks/queries/useMyPropertiesQuery";
 
 export default function MyPropertiesScreen() {
     const navigation = useNavigation();
     const { user } = useUser();
-    const properties = useQuery(
-        queryKeys.myProperties,
-        async () => {
-            if (user)
-                return axios.get<Property[]>(
-                    `${endpoints.getPropertiesByUserID}${user.ID}`
-                );
-        });
+    const properties = useMyPropertiesQuery();
 
     const addPropertyNavigation = () => {
         navigation.navigate("addPropertyScreen")
@@ -34,11 +24,11 @@ export default function MyPropertiesScreen() {
 
     if (!user) return <SignUpOrSignInScreen />
 
-    if (properties.isLoading || properties.isFetching) return <Loading />;
+    if (properties.isLoading) return <Loading />;
 
     return (
         <Screen>
-            {properties.data?.data && properties.data?.data.length > 0 ? (
+            {properties?.data && properties.data.length > 0 ? (
                 <FlatList
                     ListHeaderComponent={
                         <>
@@ -74,7 +64,7 @@ export default function MyPropertiesScreen() {
                             </Button>
                         </>
                     }
-                    data={properties.data.data}
+                    data={properties.data}
                     renderItem={({ item }) => (
                         <Card
                             property={item}
