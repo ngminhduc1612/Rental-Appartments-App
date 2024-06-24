@@ -1,13 +1,12 @@
 {
-  "type": "service_account",
-  "project_id": "apartmentsclone-ba5ae",
-  "private_key_id": "3f69a3113269d74cf651198ed2f228d0cfb8905e",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDl6EYDCum2fMj/\nL3mg02SgnJQvLLPkRMO9VFsOvxJGdJmWHUw3AgRcK388axB0M5zuuEq/a64luJHn\nOas0tXLQFxDbwy98Icp+hBe/4eDY1G3Sr6FYUIazHKEwuDVp7o99DpKdx6sd1CFz\nBABu2a9G+ttpeJWH7RmEVd7khiXatRUfk09kzRpTS+RzKRXWQgr13ZV3YOUz8T0O\ncb1HWDihwrFulZWWijRh+rjBp+rz8EXWZpumZmjfQXWQo/xYu1T2c1MfzaJcsYVq\nCz31RvAy5SsZnNnbGgzH9l6K/Z5cmtsCDGz6j/RNdKF8zJKcxZGdVDzYNH8SBIFg\ngWwiwjwbAgMBAAECggEACq9/AYkyT58BIIsuVgE9PhHI+WBUhBmGF3iiOs86pDer\nI8T809muJjKHWWGIhD4Z3yaFotv4Xhxz+5E8mdiNG4rW57/spxJS/QpaqDpxXuKQ\nsCglkZs8h3qfK0qEgQXreV6CBf9PvrUrUNMwyfYoJV5ncEGAga7Nbs8m6uwpOj71\nxypb8k6b73pwlvsvFelkKz3tMgt2u/SUxC35+sJF3NJqb9X2Z/z8zmhujCA3g1p6\ntProa0YxUW2h9jDeLkce5qytnbt9Ngrl1Slx+FOH7qKOPHHH1CuE6dtS+fkRFOSZ\n/xwlmUQzvRlk+a4Md+PsTJPu4AubPtY9F2ZsT/cRAQKBgQD97m64DFeSLf5OQNHP\nYJE5ID3/l6iPYmua2vWk9yptBgYsJjeS0uvtKH1mkCg3HMK8/q4HzUmP6c87N9ap\nC1W5Ih0NGFB+paJu01cwDorj9oCqCOHTBfx99cqEn7+nQzUy4rxBIN9zIBeME4qj\n/3Qnil0PPqOJwzgA99fvMTptwQKBgQDnx71KeQWQX+9Ia4Ki/B8/YB712vVJQrQi\nOKIR3S9Bg9gmSoTRr6qmafaZ6610ALJR7EKhHKIXsB0O05sJFCMdRoFHrPbBwiTI\nQQnaUS1ReYk+FO5wZY8YXteRiBDUI9hjD9Y/OtygqyrRlLTkiMc6oXxZzyVw0PF8\nvcGMiwxY2wKBgCqJIB7QYnLoJWsyTHLyeCEbl4cS/ndWQzQjbXZ+uKqekbYfiLud\nfUuytp7Rkwr4VF6YQsqnxqTGw6Hlzp1ueqOSZU9mPUWZtUXfPQGdzgI1roPNDRbu\nL8dhvtTMdawtA+JMPMCkIwoD3C3osBacmfZtpP0Cvx46h00SNyeoFWOBAoGBALXe\nJMmq7JK8tCU/NuJsspgn9CM2DAHQNUgk6AbcZ5ggvBpPnqhqDp1FyBo+s3uykDl4\nCVAiB45Own4/zAbzphnymL6FGZovnG0Fm5WS3NxxYR81jWLkTcPxp3SqL4pGFiSk\n6Jf0t+naZV7OMKKiMLHwxIIz6Ez9pn8a5iRBdw7BAoGBAOV2FQfcnilYIZOaEOlC\ntVqmX5HaGGMbETsMAW2W/3h9BcPJR0PJvs3SXIujTFvl5ICQCcTAJSpmu6GelPwM\nLkZc1Mi7Qbgia+bvoVFzb8/dKu6spCLHnOBByGiSgASrdOgPfKhJH6hf3G0H2v8F\nGbLOpXXiq6R0aIQj9HZdbn3f\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-bntee@apartmentsclone-ba5ae.iam.gserviceaccount.com",
-  "client_id": "114233986959799041214",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-bntee%40apartmentsclone-ba5ae.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "distribution": "internal"
+        },
+        "production": {}
+    }
 }

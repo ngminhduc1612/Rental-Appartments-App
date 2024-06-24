@@ -3136,7 +3136,7 @@ available-typed-arrays@^1.0.6:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
-axios@^1.6.8:
+axios@^1.5.1, axios@^1.6.8:
   version "1.6.8"
   resolved "https://registry.npmjs.org/axios/-/axios-1.6.8.tgz"
   integrity sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==
@@ -6859,6 +6859,13 @@ nanoid@^3.1.23, nanoid@^3.3.7:
   version "3.3.7"
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
+
+native-notify@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.npmjs.org/native-notify/-/native-notify-4.0.4.tgz"
+  integrity sha512-Ta+hk3p9yf8luXt5P9kYp9WBdsxcR9QdSA2AfST639jA7g45OIewtyU9uF8vVfU+Eh01GJWO/LufESwqsUYgjA==
+  dependencies:
+    axios "^1.5.1"
 
 natural-compare@^1.4.0:
   version "1.4.0"

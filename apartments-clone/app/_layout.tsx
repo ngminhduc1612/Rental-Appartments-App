@@ -12,9 +12,12 @@ import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
+import registerNNPushToken from 'native-notify';
 
 import { AuthContext, LoadingContext } from '@/context';
 import { User } from '@/types/user';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -30,6 +33,11 @@ export const linking = {
   prefixes: [Linking.createURL("/")],
   config: {
     screens: {
+      '(tabs)': {
+        screens:{
+          index: "",
+        }
+      },
       resetPasswordScreen: { path: "resetpassword/:token" },
     },
   },
@@ -72,20 +80,42 @@ export default function RootLayout() {
 
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>
-    <AuthContext.Provider value={{ user, setUser }}>
-      <QueryClientProvider client={queryClient}>
-        <ApplicationProvider {...eva} theme={theme}>
-          <NavigationContainer linking={linking} independent={true}>
-            <RootLayoutNav />
-          </NavigationContainer>
-        </ApplicationProvider>
-      </QueryClientProvider>
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, setUser }}>
+        <QueryClientProvider client={queryClient}>
+          <ApplicationProvider {...eva} theme={theme}>
+            <NavigationContainer linking={linking} independent={true}>
+              <RootLayoutNav />
+            </NavigationContainer>
+          </ApplicationProvider>
+        </QueryClientProvider>
+      </AuthContext.Provider>
     </LoadingContext.Provider>
   );
 }
 
 function RootLayoutNav() {
+  const { registerForPushNotificationsAsync, handleNotificationResponse } = useNotifications();
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    const responseListener =
+      Notifications. addNotificationResponseReceivedListener(
+        handleNotificationResponse
+      );
+
+      return () => {
+        if (responseListener)
+          Notifications.removeNotificationSubscription(responseListener);
+      }
+  }, []);
+
   const colorScheme = useColorScheme();
 
   return (
