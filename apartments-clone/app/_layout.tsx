@@ -33,12 +33,8 @@ export const linking = {
   prefixes: [Linking.createURL("/")],
   config: {
     screens: {
-      '(tabs)': {
-        screens:{
-          index: "",
-        }
-      },
       resetPasswordScreen: { path: "resetpassword/:token" },
+      messageScreen: { path: "message/:propertyID" },
     },
   },
 };
@@ -135,6 +131,7 @@ function RootLayoutNav() {
           <Stack.Screen name="editPropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="manageUnitsScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="reviewScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="accountSettingScreen" options={{ headerTitle: 'Account Settings', presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
     </NavigationContainer>

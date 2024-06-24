@@ -39,6 +39,8 @@ func main() {
 		user.Post("/resetpassword", resetTokenVerifierMiddleware, routes.Resetpassword)
 		user.Get("/{id}/properties/saved", routes.GetUserSavedProperties)
 		user.Patch("/{id}/properties/saved", routes.AlterUserSavedProperties)
+		user.Patch("/{id}/pushtoken", routes.AlterPushToken)
+		user.Patch("/{id}/settings/notifications", routes.AllowsNotifications)
 	}
 	property := app.Party("/api/property")
 	{
@@ -57,6 +59,10 @@ func main() {
 	review := app.Party("/api/review")
 	{
 		review.Post("/property/{id}", routes.CreateReview)
+	}
+	notifications := app.Party("/api/notifications")
+	{
+		notifications.Post("/test", routes.TestMessageNotification)
 	}
 
 	app.Listen(":4000")

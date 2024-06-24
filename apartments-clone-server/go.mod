@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.9 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/oliveroneill/exponent-server-sdk-golang v0.0.0-20210823140141-d050598be512 // indirect
 	gorm.io/driver/mysql v1.4.7 // indirect
 )
 

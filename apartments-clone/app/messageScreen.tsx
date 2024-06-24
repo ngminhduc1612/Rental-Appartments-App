@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Platform, StyleSheet, View, Image, Pressable } from "react-native";
+import { Platform, StyleSheet, View, Image } from "react-native";
 import { Text, Input, Button } from "@ui-kitten/components"
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -14,6 +13,8 @@ import { getStateAbbreviation } from "@/utils/getStateAbbreviation";
 import { useUser } from "@/hooks/useUser";
 import { properties } from "@/data/property";
 import { PressableInput } from "@/components/pressableInput";
+import { useSelectedPropertyQuery } from "@/hooks/queries/useSelectedPropertyQuery";
+import SignUpOrSignInScreen from "./signUpOrSignInScreen";
 
 export default function MessageScreen(
     // { route }: { route: { params: { propertyID: number, tour?: boolean } } }
@@ -21,21 +22,30 @@ export default function MessageScreen(
     const route = useRoute();
     const navigation = useNavigation();
     const { tour, propertyID } = route.params;
-    const index = properties.findIndex((i) => i.ID === propertyID);
-    const property = properties[index];
+    const propertyQuery = useSelectedPropertyQuery(propertyID);
+    const property = propertyQuery.data;
+    // const index = properties.findIndex((i) => i.ID === propertyID);
+    // const property = properties[index];
     const { user } = useUser();
+
+    if (!user) return <SignUpOrSignInScreen />;
+    if (!properties) return <Text>Unable to get property</Text>
 
     return (
         <KeyboardAwareScrollView bounces={false}>
             <Screen style={styles.container}>
                 {Platform.OS === "ios" ? <ModalHeader /> : null}
                 <Row style={styles.row} >
-                    <Image style={styles.image} source={{ uri: property.images[0] }} />
+                    {property?.images && property.images.length > 0 ? (
+                        <Image style={styles.image} source={{ uri: property.images[0] }} />
+                    ) : null}
                     <View style={styles.address}>
-                        <Text category="s1">{property.name}</Text>
+                        {property?.name ? (
+                            <Text category="s1">{property.name}</Text>
+                        ) : null}
                         <Text category="c1">
-                            {property.street}, {property.city},{" "}
-                            {getStateAbbreviation(property.state)} {property.zip}
+                            {property?.street}, {property?.city},{" "}
+                            {getStateAbbreviation(property?.state)} {property?.zip}
                         </Text>
                         <Text category={"c1"}>
                             ${property.rentLow.toLocaleString()} - {" "}

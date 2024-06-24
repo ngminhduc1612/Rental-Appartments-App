@@ -56,7 +56,7 @@ export default function AccountScreen() {
     const accountButtons = [
         {
             label: "Account Settings",
-            onPress: () => console.log("navigate to Account Settings"),
+            onPress: () => navigation.navigate("accountSettingScreen"),
         },
         {
             label: "Billing History",
