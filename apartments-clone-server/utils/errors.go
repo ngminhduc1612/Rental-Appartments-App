@@ -51,6 +51,11 @@ func wrapValidationErrors(errs validator.ValidationErrors) []validationError {
 	return validationErrors
 }
 
+func CreateNotFound(ctx iris.Context) {
+	ctx.StatusCode(iris.StatusNotFound)
+	ctx.Text("Not Found")
+}
+
 type validationError struct {
 	ActualTag string `json:"tag"`
 	Namespace string `json:"namespace"`

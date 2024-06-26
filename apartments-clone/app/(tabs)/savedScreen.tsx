@@ -13,12 +13,13 @@ import { Property } from "@/types/property";
 import { SignUpAndSignInButtons } from "@/components/SignUpAndSignInButtons";
 import { useUser } from "@/hooks/useUser";
 import { useSavedPropertiesQuery } from "@/hooks/queries/useSavedPropertiesQuery";
+import { useContactedPropertiesQuery } from "@/hooks/queries/useContactedPropertiesQuery";
 import { Loading } from "@/components/Loading";
 
 export default function SavedScreen() {
     const [activeIndex, setActiveIndex] = useState<number>(0); // Đánh dấu button nào đang active, thay đổi màu
     const savedProperties = useSavedPropertiesQuery();
-    const contactedProperties = undefined;
+    const contactedProperties = useContactedPropertiesQuery();
     const applicationProperties = undefined;
     const navigation = useNavigation();
 
@@ -44,7 +45,7 @@ export default function SavedScreen() {
         setActiveIndex(index);
     };
 
-    if (savedProperties.isLoading) return <Loading />;
+    if (savedProperties.isLoading || contactedProperties.isLoading) return <Loading />;
 
     const getBodyText = (heading: string, subHeading: string) => {
         return (
@@ -95,7 +96,8 @@ export default function SavedScreen() {
             );
         };
         if (activeIndex === 1) {
-            if (contactedProperties) return getPropertiesFlatList(contactedProperties);
+            if (contactedProperties?.data && contactedProperties.data.length > 0 ) 
+                return getPropertiesFlatList(contactedProperties.data);
             return (
                 <>
                     <LottieView

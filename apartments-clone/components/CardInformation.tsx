@@ -43,7 +43,7 @@ export const CardInformation = ({ property, myProperty }: { property: Property, 
         navigation.navigate("manageUnitsScreen", { propertyID: property.ID });
 
     const emailNavigation = () =>
-        navigation.navigate("messageScreen", { propertyID: property.ID });
+        navigation.navigate("messagePropertyScreen", { propertyID: property.ID });
 
     const editPropertyNavigation = () =>
         navigation.navigate("editPropertyScreen", { propertyID: property.ID });

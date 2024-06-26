@@ -15,8 +15,11 @@ import { properties } from "@/data/property";
 import { PressableInput } from "@/components/pressableInput";
 import { useSelectedPropertyQuery } from "@/hooks/queries/useSelectedPropertyQuery";
 import SignUpOrSignInScreen from "./signUpOrSignInScreen";
+import { useConversationsQuery } from "@/hooks/queries/useConversationsQuery";
+import { useCreateConversationMutation } from "@/hooks/mutations/useCreateConversationMutation";
+import { Loading } from "@/components/Loading";
 
-export default function MessageScreen(
+export default function MessagePropertyScreen(
     // { route }: { route: { params: { propertyID: number, tour?: boolean } } }
 ) {
     const route = useRoute();
@@ -27,9 +30,53 @@ export default function MessageScreen(
     // const index = properties.findIndex((i) => i.ID === propertyID);
     // const property = properties[index];
     const { user } = useUser();
+    const conversations = useConversationsQuery();
+    const createConversation = useCreateConversationMutation();
 
     if (!user) return <SignUpOrSignInScreen />;
     if (!properties) return <Text>Unable to get property</Text>
+    if (conversations.isLoading) return <Loading />;
+
+    const navigateToMessageScreen = (
+        conversationID: number,
+        recipientName: string
+    ) => {
+        navigation.navigate("messagesScreen", {
+            initial: false,
+            conversationID: conversationID,
+            recipientName: recipientName,
+        })
+    }
+
+    if (conversations?.data && conversations.data.length > 0) { // Lần đầu tạo conservation
+        const index = conversations.data.findIndex(
+            (i) => i.propertyID === route.params.propertyID
+        );
+        if (index >= 0) {
+            navigateToMessageScreen(
+                conversations.data[index].ID,
+                conversations.data[index].recipientName
+            );
+        }
+    }
+
+    const sendMessage = (text: string) => {
+        createConversation.mutate({
+            ownerID: property.userID,
+            propertyID: property.ID,
+            tenantID: user.ID,
+            propertyName: property.name
+                ? property.name
+                : `${property.street}, ${property.city}, ${getStateAbbreviation(
+                    property.state
+                )}`,
+            senderName:
+                user.firstName && user.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : `${user.email}`,
+            text,
+        });
+    };
 
     return (
         <KeyboardAwareScrollView bounces={false}>
@@ -75,8 +122,7 @@ export default function MessageScreen(
                         showCalendar: yup.bool(),
                     })}
                     onSubmit={(values) => {
-                        console.log("send values", values);
-                        navigation.goBack();
+                        sendMessage(values.message);
                     }}
                 >
                     {({

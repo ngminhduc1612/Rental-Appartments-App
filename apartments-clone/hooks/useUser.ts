@@ -8,6 +8,7 @@ import { User } from "@/types/user";
 import { queryKeys } from "@/constants";
 import { Property } from "@/types/property";
 import { alterAllowsNotifications, alterPushToken } from "@/services/user";
+import { socket } from "@/constants/socket";
 
 export const useUser = () => {
     const { user, setUser } = useContext(AuthContext);
@@ -25,6 +26,15 @@ export const useUser = () => {
         const searchedProperties: Property[] | undefined = queryClient.getQueryData(
             queryKeys.searchProperties
         );
+
+        socket.auth = {
+            userID: user.ID,
+            username:
+              user.firstName && user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : `${user.email}`,
+          };
+          socket.connect();
         if (searchedProperties) { // xử lý khi người dùng chưa đăng nhập mà search, sau đó login thì các thông tin đã search sẽ có thông tin về việc đã like hoặc không
             for (let i of searchedProperties) {
                 i.liked = false;
@@ -39,6 +49,7 @@ export const useUser = () => {
             const prevUser = { ...user };
             setUser(null);
             SecureStore.deleteItemAsync("user");
+            socket.disconnect();
             queryClient.clear();
             try {
                 const token = (await Notifications.getExpoPushTokenAsync()).data;

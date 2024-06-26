@@ -13,11 +13,12 @@ import * as SecureStore from "expo-secure-store";
 import * as Linking from 'expo-linking';
 import { NavigationContainer } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import registerNNPushToken from 'native-notify';
 
 import { AuthContext, LoadingContext } from '@/context';
 import { User } from '@/types/user';
 import { useNotifications } from '@/hooks/useNotifications';
+import { socket } from '@/constants/socket';
+import { queryKeys } from '@/constants';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -34,7 +35,9 @@ export const linking = {
   config: {
     screens: {
       resetPasswordScreen: { path: "resetpassword/:token" },
-      messageScreen: { path: "message/:propertyID" },
+      messagePropertyScreen: { path: "messageproperty/:propertyID" },
+      messagesScreen: { path: "messages/:conversationID/:recipientName" },
+      conversationsScreen: "conversations",
     },
   },
 };
@@ -59,9 +62,73 @@ export default function RootLayout() {
   useEffect(() => {
     async function getUser() {
       const user = await SecureStore.getItemAsync("user");
-      if (user) setUser(JSON.parse(user))
+      if (user) {
+        const userObj = JSON.parse(user);
+        setUser(userObj);
+
+        socket.auth = {
+          userID: userObj.ID,
+          username:
+            userObj.firstName && userObj.lastName
+              ? `${userObj.firstName} ${userObj.lastName}`
+              : `${userObj.email}`,
+        };
+        socket.connect();
+      }
     }
-    getUser();
+    getUser().then(() => {
+      socket.on(
+        "getMessage",
+        (data: {
+          senderID: number;
+          senderName: string;
+          conversationID: number;
+          text: string;
+        }) => {
+          queryClient.invalidateQueries(queryKeys.conversations);
+          queryClient.invalidateQueries(queryKeys.selectedConversation);
+
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: data.senderName,
+              body: data.text,
+              data: {
+                url: `exp://192.168.88.223:8081/--/messages/${data.conversationID}/${data.senderName}`,
+              }
+            },
+            trigger: null,
+          });
+        }
+      );
+      socket.on("session", (data: { sessionID: string }) => {
+        socket.auth = { sessionID: data.sessionID };
+        if (user) {
+          const updatedUser = { ...user };
+          updatedUser.sessionID = data.sessionID;
+          setUser(updatedUser);
+          SecureStore.setItemAsync("user", JSON.stringify(updatedUser));
+        }
+      });
+
+      socket.on("connect_error", (err) => {
+        if (err.message === "Invalid userID" && user) {
+          socket.auth = {
+            userID: user?.ID,
+            username:
+              user.firstName && user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : `${user.email}`,
+          };
+          socket.connect();
+        }
+      });
+    });
+
+    return () => {
+      socket.off("getMesssage");
+      socket.off("session");
+      socket.off("connect_error");
+    };
   }, []);
 
   useEffect(() => {
@@ -102,14 +169,14 @@ function RootLayoutNav() {
     });
 
     const responseListener =
-      Notifications. addNotificationResponseReceivedListener(
+      Notifications.addNotificationResponseReceivedListener(
         handleNotificationResponse
       );
 
-      return () => {
-        if (responseListener)
-          Notifications.removeNotificationSubscription(responseListener);
-      }
+    return () => {
+      if (responseListener)
+        Notifications.removeNotificationSubscription(responseListener);
+    }
   }, []);
 
   const colorScheme = useColorScheme();
@@ -125,13 +192,15 @@ function RootLayoutNav() {
           <Stack.Screen name="signInScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="signUpScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="propertyDeitalsScreen" options={{ headerShown: false, presentation: 'modal' }} />
-          <Stack.Screen name="messageScreen" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="messagePropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="addPropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="myPropertiesScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="editPropertyScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="manageUnitsScreen" options={{ headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="reviewScreen" options={{ headerShown: false, presentation: 'modal' }} />
-          <Stack.Screen name="accountSettingScreen" options={{ headerTitle: 'Account Settings', presentation: 'modal' }} />
+          <Stack.Screen name="accountSettingScreen" options={{ headerTitle: 'Account Settings', headerBackTitle: "Back" }} />
+          <Stack.Screen name="messagesScreen" options={{ headerBackTitle: "Back" }} />
+          <Stack.Screen name="conversationsScreen" options={{ headerTitle: 'Conversations', headerBackTitle: "Back" }} />
         </Stack>
       </ThemeProvider>
     </NavigationContainer>

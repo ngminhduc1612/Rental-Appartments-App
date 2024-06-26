@@ -66,6 +66,10 @@ export default function AccountScreen() {
             label: "Banks and Cards",
             onPress: () => console.log("navigate to Banks and Cards"),
         },
+        {
+            label: "Message",
+            onPress: () => navigation.navigate("conversationsScreen"),
+        },
     ]
 
     const rentalManagementButtons = [
