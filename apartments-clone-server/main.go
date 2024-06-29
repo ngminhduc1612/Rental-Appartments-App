@@ -45,7 +45,7 @@ func main() {
 	}
 	property := app.Party("/api/property")
 	{
-		property.Post("/", routes.CreateProperty)
+		property.Post("/create", routes.CreateProperty)
 		property.Get("/{id}", routes.GetProperty)
 		property.Get("/userid/{id}", routes.GetPropertiesByUserID)
 		property.Delete("/{id}", routes.DeleteProperty)
