@@ -1,6 +1,7 @@
 import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { Text, Divider } from "@ui-kitten/components";
+import { useNavigation } from "@react-navigation/native";
 
 import { Property } from "@/types/property";
 import { TabBar } from "../TabBar";
@@ -28,6 +29,8 @@ export const PricingAndFloorPlanSection = ({
     const [currentApartments, setCurrentApartments] = useState(
         property.apartments
     );
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (property.apartments !== currentApartments) {
@@ -133,7 +136,7 @@ export const PricingAndFloorPlanSection = ({
                                 {i.active === true ? "Available Now" : "Not Available"}
                             </Text>
                             <TouchableOpacity
-                                onPress={() => console.log("navigate to floor plan details")}
+                                onPress={() => navigation.navigate("floorPlanDetailsScreen", { apartmentID: i.ID})}
                             >
                                 <Text category={"c1"} status="info">
                                     Floor Plan Details

@@ -26,6 +26,23 @@ func GetApartmentsByPropertyID(ctx iris.Context) {
 	ctx.JSON(apartments)
 }
 
+func GetApartmentsByApartmentID(ctx iris.Context) {
+	params := ctx.Params()
+	id := params.Get("id")
+
+	var apartments []models.Apartment
+	apartmentsExist := storage.DB.Where("id = ?", id).Find(&apartments)
+
+	if apartmentsExist.Error != nil {
+		utils.CreateError(
+			iris.StatusInternalServerError,
+			"Error", apartmentsExist.Error.Error(), ctx)
+		return
+	}
+
+	ctx.JSON(apartments)
+}
+
 func UpdateApartments(ctx iris.Context) {
 	params := ctx.Params()
 	id := params.Get("id")

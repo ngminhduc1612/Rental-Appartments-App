@@ -56,6 +56,7 @@ export const endpoints = {
     deleteProperty: propertyEndpoint + "/",
     updateProperty: propertyEndpoint + "/update/",
     getApartmentsByPropertyID: apartmentEndpoint + "/property/",
+    getApartmentByApartmentID: apartmentEndpoint + "/",
     updateApartments: apartmentEndpoint + "/property/",
     createReview: reviewEndpoint + "/property/",
     getSavedPropertiesByUserID: savedEndpoint,
@@ -78,4 +79,5 @@ export const queryKeys = {
     apartments: "apartments",
     conversations: "conversations",
     selectedConversation: "selectedConversation",
+    apartment: "apartment",
 };

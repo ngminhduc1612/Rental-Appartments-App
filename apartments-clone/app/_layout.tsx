@@ -201,6 +201,7 @@ function RootLayoutNav() {
           <Stack.Screen name="accountSettingScreen" options={{ headerTitle: 'Account Settings', headerBackTitle: "Back" }} />
           <Stack.Screen name="messagesScreen" options={{ headerBackTitle: "Back" }} />
           <Stack.Screen name="conversationsScreen" options={{ headerTitle: 'Conversations', headerBackTitle: "Back" }} />
+          <Stack.Screen name="floorPlanDetailsScreen" options={{ headerShown: false, presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
     </NavigationContainer>
