@@ -53,6 +53,7 @@ export default function MessagePropertyScreen(
             (i) => i.propertyID === route.params.propertyID
         );
         if (index >= 0) {
+            navigation.navigate("accountScreen"),
             navigateToMessageScreen(
                 conversations.data[index].ID,
                 conversations.data[index].recipientName
@@ -75,6 +76,11 @@ export default function MessagePropertyScreen(
                     ? `${user.firstName} ${user.lastName}`
                     : `${user.email}`,
             text,
+        },{
+            onSuccess: () => {
+                navigation.navigate("accountScreen"),
+                alert("Message has been send successfully! Check your inbox!")
+            },
         });
     };
 

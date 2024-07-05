@@ -130,7 +130,7 @@ export const PricingAndFloorPlanSection = ({
                         {/* Availablle now part */}
                         <Row style={styles.availableNowContainer}>
                             <Text category={"c1"} style={{ fontWeight: "600" }}>
-                                Available: Now
+                                {i.active === true ? "Available Now" : "Not Available"}
                             </Text>
                             <TouchableOpacity
                                 onPress={() => console.log("navigate to floor plan details")}
@@ -168,7 +168,7 @@ export const PricingAndFloorPlanSection = ({
                                 {i.sqFt.toLocaleString("en-US")}
                             </Text>
                             <Text category={"c1"} style={styles.availableText}>
-                                {new Date(i.availableOn).toLocaleDateString()}
+                                {i.active === false ? "None" : new Date(i.availableOn).toLocaleDateString()}
                             </Text>
                         </Row>
                         <Divider style={styles.divider} />
