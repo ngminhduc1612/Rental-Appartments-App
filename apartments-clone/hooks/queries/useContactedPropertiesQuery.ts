@@ -6,7 +6,7 @@ import { Property } from "../../types/property";
 import { useUser } from "../useUser";
 
 const fetchProperties = async (
-    userID?: number,
+    userID?: number
 ): Promise<Property[]> => {
     if (!userID) return [];
 
