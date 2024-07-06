@@ -1,113 +1,118 @@
-import { StyleSheet, FlatList, Dimensions, View } from "react-native";
-
+import { StyleSheet, ScrollView, Dimensions, View } from "react-native";
 import { Screen } from "@/components/Screen";
-import { Divider, Text } from "@ui-kitten/components";
+import { Divider, Text, Card, Layout } from "@ui-kitten/components";
 import { useRoute } from "@react-navigation/native";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { useApartmentQuery } from "@/hooks/queries/useApartmentQuery";
 import { Loading } from "@/components/Loading";
 import { theme } from "@/theme";
-import { Row } from "@/components/Row";
 
 export default function FloorPlanDetailsScreen() {
     const route = useRoute();
     const { data, isLoading } = useApartmentQuery(route.params.apartmentID);
-    const apartment = data[0];
-
+    const apartment = data ? data[0] : null;
 
     if (isLoading) return <Loading />;
+    if (!apartment) return <Text>Apartment not found</Text>;
 
     return (
         <Screen>
-            <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
                 {apartment.images ? (
                     <ImageCarousel images={apartment.images} indexShown imageStyle={styles.image} />
                 ) : null}
-                {apartment.unit ? (
-                    <Text category={"h5"} style={styles.defaultMarginTop}>
-                        Unit {apartment.unit}:
+                <Card style={styles.card}>
+                    {apartment.unit && (
+                        <Text category={"h5"} style={styles.unitText}>
+                            {apartment.unit}
+                        </Text>
+                    )}
+                    <Divider style={styles.divider} />
+                    <Text category="h5" style={styles.sectionHeader}>
+                        Detailed Information
                     </Text>
-                ) : null}
-                <Divider style={styles.divider} />
-                <Text category="h5" style={styles.defaultMarginVertical}>
-                    Detailed Information
-                </Text>
-                <Text style={styles.layeredText}>
-                    Number of bedrooms: {apartment.bedrooms}
-                </Text>
-                <Text style={styles.layeredText}>
-                    Number of bathrooms: {apartment.bathrooms}
-                </Text>
-                <Text style={styles.layeredText}>
-                    Area: {apartment.sqFt.toLocaleString("en-US")} Sq Ft
-                </Text>
-                <Divider style={styles.divider} />
-                <Text category={"h5"} style={styles.defaultMarginTop}>
-                    Description
-                </Text>
-                {apartment.description ? (
-                    <Text >
-                        {apartment.description}
+                    <Text style={styles.detailText}>
+                        Number of bedrooms: {apartment.bedrooms}
                     </Text>
-                ) : <Text >
-                    This unit does not have description!
-                </Text>}
-                <Divider style={styles.divider} />
-                <Text category="h5" style={styles.defaultMarginVertical}>
-                    Terms and Conditions
-                </Text>
-                <Text style={styles.layeredText}>
-                    Price: ${apartment.rent.toLocaleString("en-US")}
-                </Text>
-                <Text style={styles.layeredText}>
-                    Deposit: ${apartment.deposit.toLocaleString("en-US")}
-                </Text>
-                <Text style={styles.layeredText}>
-                    Lease length: ${apartment.leaseLength}
-                </Text>
-                <Divider style={styles.divider} />
-                <Text category="h4" style={{ color: theme["color-primary-500"] }}>
-                    Available: {apartment.active === false ? "None" : new Date(apartment.availableOn).toLocaleDateString()}
-                </Text>
-            </View>
+                    <Text style={styles.detailText}>
+                        Number of bathrooms: {apartment.bathrooms}
+                    </Text>
+                    <Text style={styles.detailText}>
+                        Area: {apartment.sqFt.toLocaleString("en-US")} Sq Ft
+                    </Text>
+                    <Divider style={styles.divider} />
+                    <Text category={"h5"} style={styles.sectionHeader}>
+                        Description
+                    </Text>
+                    <Text style={styles.descriptionText}>
+                        {apartment.description || "This unit does not have a description!"}
+                    </Text>
+                    <Divider style={styles.divider} />
+                    <Text category="h5" style={styles.sectionHeader}>
+                        Terms and Conditions
+                    </Text>
+                    <Text style={styles.detailText}>
+                        Price: ${apartment.rent.toLocaleString("en-US")}
+                    </Text>
+                    <Text style={styles.detailText}>
+                        Deposit: ${apartment.deposit.toLocaleString("en-US")}
+                    </Text>
+                    <Text style={styles.detailText}>
+                        Lease length: {apartment.leaseLength} months
+                    </Text>
+                    <Divider style={styles.divider} />
+                    <Text category="h4" style={styles.availableText}>
+                        Available: {apartment.active === false ? "None" : new Date(apartment.availableOn).toLocaleDateString()}
+                    </Text>
+                </Card>
+            </ScrollView>
         </Screen>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 10,
-        marginTop: 20,
+        padding: 20,
     },
     image: {
-        width: Dimensions.get("window").width,
+        width: Dimensions.get("window").width - 40,
         height: 250,
-        borderTopRightRadius: 0,
-        borderTopLeftRadius: 0,
+        borderRadius: 10,
+        marginBottom: 20,
     },
-    contentContainer: {
-        marginHorizontal: 10
+    card: {
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: theme["color-basic-100"],
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    unitText: {
+        marginBottom: 10,
+        color: theme["color-primary-500"],
     },
     divider: {
         backgroundColor: theme["color-gray"],
-        marginTop: 10,
+        marginVertical: 10,
     },
-    defaultMarginVertical: {
-        marginVertical: 10
+    sectionHeader: {
+        marginVertical: 10,
+        fontWeight: "bold",
     },
-    containerRow: {
-        justifyContent: "space-between",
+    detailText: {
+        marginVertical: 5,
+        color: theme["color-basic-600"],
     },
-    iconRow: {
-        padding: 5,
+    descriptionText: {
+        marginVertical: 5,
+        color: theme["color-basic-700"],
     },
-    shareIcon: {
-        marginRight: 20,
-        marginTop: 0,
+    availableText: {
+        marginTop: 20,
+        color: theme["color-primary-500"],
+        textAlign: "center",
     },
-    defaultMarginTop: {
-        marginTop: 10,
-    },
-    layeredText: { flexDirection: 'row' },
-    availableText: { width: "50%" },
 });

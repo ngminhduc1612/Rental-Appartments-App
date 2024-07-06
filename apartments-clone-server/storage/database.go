@@ -30,12 +30,12 @@ func connectToDB() *gorm.DB {
 
 func performMigrations(db *gorm.DB) {
 	db.AutoMigrate(
+		&models.User{},
+		&models.Property{},
+		&models.Apartment{},
+		&models.Review{},
 		&models.Conversation{},
 		&models.Message{},
-		&models.Review{},
-		&models.Apartment{},
-		&models.Property{},
-		&models.User{},
 	)
 }
 

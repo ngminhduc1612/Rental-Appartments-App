@@ -139,7 +139,7 @@ export const PricingAndFloorPlanSection = ({
                                 onPress={() => navigation.navigate("floorPlanDetailsScreen", { apartmentID: i.ID})}
                             >
                                 <Text category={"c1"} status="info">
-                                    Floor Plan Details
+                                    Apartment Details
                                 </Text>
                             </TouchableOpacity>
                         </Row>
