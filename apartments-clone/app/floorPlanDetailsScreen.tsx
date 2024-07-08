@@ -58,7 +58,7 @@ export default function FloorPlanDetailsScreen() {
                         Deposit: ${apartment.deposit.toLocaleString("en-US")}
                     </Text>
                     <Text style={styles.detailText}>
-                        Lease length: {apartment.leaseLength} months
+                        Lease length: {apartment.leaseLength}
                     </Text>
                     <Divider style={styles.divider} />
                     <Text category="h4" style={styles.availableText}>

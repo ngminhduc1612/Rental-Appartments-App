@@ -58,7 +58,7 @@ export const CardInformation = ({ property, myProperty }: { property: Property, 
         let bedLow = property.bedroomLow === 0 ? "Studio" : property.bedroomLow;
         if (property.bedroomLow === property.bedroomHigh) return bedLow;
 
-        return `${bedLow} - ${property.bedroomHigh} Beds`;
+        return `${bedLow} - ${property.bedroomHigh} ${property.bedroomHigh === 1 ? "Bed" : "Beds"}`;
     };
 
     const DefaultInfo = () => (

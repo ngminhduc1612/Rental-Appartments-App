@@ -127,7 +127,7 @@ export default function SavedScreen() {
                     source={require("../../assets/lotties/Applications.json")}
                 />
                 {getBodyText(
-                    "Check the status of your rental applications here",
+                    "Check other services of your rental apartments here",
                     "Any properties that you have applied to will show here"
                 )}
                 {!user && (
