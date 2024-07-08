@@ -49,7 +49,7 @@ export const Map = ({
         }
     }, [initialRegion])
 
-    const unFocusProperty = () => { //hủy chọn property + hiện thị tabbar
+    const unFocusProperty = () => { //hủy chọn property + hiện thị tabsbar
         setActiveIndex(-1);
         navigation.setOptions({ tabBarStyle: { display: "flex" } });
     }

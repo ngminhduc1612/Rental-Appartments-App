@@ -9,9 +9,13 @@ import {
 } from "./notifications";
 import { SessionSocket } from "./types";
 
+// Load các biến môi trường từ file .env vào process.env
 dotenv.config();
+
+// Tạo một instance của Socket.IO server
 const io = new Server();
 
+// Tạo một Map để lưu trữ thông tin phiên người dùng dựa trên userID
 const sessionMap = new Map<
     number,
     {
@@ -23,6 +27,7 @@ const sessionMap = new Map<
     }
 >();
 
+// Middleware để kiểm tra và khởi tạo phiên người dùng
 io.use((socket, next) => {
     const sessionID = socket.handshake.auth.sessionID;
     if (sessionID) {
@@ -63,13 +68,17 @@ io.use((socket, next) => {
     next();
 });
 
+// Xử lý sự kiện kết nối mới
 io.on("connection", (socket) => {
+    // Thêm socket vào một phòng với userSocketID
     socket.join((socket as SessionSocket).userSocketID);
 
+    // Gửi sessionID về client
     socket.emit("session", {
         sessionID: (socket as SessionSocket).sessionID,
     });
 
+    // Lắng nghe sự kiện gửi tin nhắn
     socket.on(
         "sendMessage",
         async ({
@@ -87,11 +96,12 @@ io.on("connection", (socket) => {
         }) => {
             const receiver = sessionMap.get(receiverID);
 
+            // Nếu người nhận đang kết nối, gửi tin nhắn đến phòng của họ
             if (receiver && receiver.connected)
                 return (
                     socket
                         .to(receiver.userSocketID)
-                        // .to((socket as SessionSocket).userSocketID)  // Add if you want messaging in multiple tabs to update at once
+                        // .to((socket as SessionSocket).userSocketID)  // Bỏ comment dòng này nếu muốn cập nhật tin nhắn trong nhiều tab cùng lúc
                         .emit("getMessage", {
                             senderID,
                             text,
@@ -100,6 +110,7 @@ io.on("connection", (socket) => {
                         })
                 );
 
+            // Nếu người nhận không kết nối, lấy token thông báo đẩy
             const tokens = await getPushTokens(receiverID);
             if (tokens) {
                 const messages = createMessages(
@@ -109,11 +120,13 @@ io.on("connection", (socket) => {
                     senderName
                 );
 
+                // Gửi thông báo đến các token
                 sendNotifications(messages);
             }
         }
     );
 
+    // Xử lý sự kiện ngắt kết nối
     socket.on("disconnect", () => {
         const userSession = sessionMap.get((socket as SessionSocket).userID);
         if (userSession) {
@@ -123,5 +136,6 @@ io.on("connection", (socket) => {
     });
 })
 
+// Khởi động server lắng nghe trên cổng 3000
 io.listen(3000);
 console.log("Listening on port 3000");
