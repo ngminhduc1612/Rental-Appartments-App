@@ -31,7 +31,7 @@ export const Map = ({
     setLocation: (location: string) => void;
     initialRegion?: Region | undefined;
 }) => {
-    const [activeIndex, setActiveIndex] = useState(-1);
+    const [activeIndex, setActiveIndex] = useState(-1); //lưu trữ index của property được chọn
     const [showSearchAreaButton, setShowSearchAreaButton] = useState(false);
     const [boundingBox, setBoundingBox] = useState<number[]>([]); // dung de search properties
     const [region, setRegion] = useState<Region | undefined>(
@@ -43,24 +43,24 @@ export const Map = ({
     useEffect(() => {
         if (location === "Map Area") return;
 
-        if (initialRegion) {
+        if (initialRegion) { //khu vự bị đổi => cập nhật lại khu vực
             setShowSearchAreaButton(false);
             setRegion(initialRegion);
         }
     }, [initialRegion])
 
-    const unFocusProperty = () => {
+    const unFocusProperty = () => { //hủy chọn property + hiện thị tabbar
         setActiveIndex(-1);
         navigation.setOptions({ tabBarStyle: { display: "flex" } });
     }
 
-    const handleMapPress = () => {
+    const handleMapPress = () => { 
         if (Platform.OS === "android") {
             unFocusProperty();
         }
     }
 
-    const handleMarkerPress = (index: number) => {
+    const handleMarkerPress = (index: number) => { // pick a marker => chuyển đến địa điểm đó
         setTimeout(() => {
             mapRef.current?.animateCamera({
                 center: {
@@ -88,10 +88,10 @@ export const Map = ({
         }, 600)
 
         setActiveIndex(index);
-        navigation.setOptions({ tabBarStyle: { display: "none" } });
+        navigation.setOptions({ tabBarStyle: { display: "none" } }); //set index property được chọn và ẩn tabbar
     };
 
-    const handleSearchAreaButtonPress = () => {
+    const handleSearchAreaButtonPress = () => { // nút search
         searchProperties.refetch();
         setLocation("Map Area");
         mapRegion = region;
@@ -108,7 +108,7 @@ export const Map = ({
                 onPress={handleMapPress}
                 region={region}
                 onRegionChangeComplete={(region, isGesture) => {
-                    if (isGesture?.isGesture) {
+                    if (isGesture?.isGesture) { //khi region bị thay đổi
                         if (!showSearchAreaButton) setShowSearchAreaButton(true);
 
                         const newBoundingBox = [
