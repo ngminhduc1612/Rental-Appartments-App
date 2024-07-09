@@ -17,8 +17,8 @@ androidHeight += androidNotch;
 
 export const HEADERHEIGHT = Platform.OS === "ios" ? iosHeight : androidHeight;
 
-const serverURL = "http://192.168.88.223:4000/api";
-const chatUrl = "http://192.168.88.223:3000";
+const serverURL = "http://192.168.145.108:4000/api";
+const chatUrl = "http://192.168.145.108:3000";
 const location = "/location";
 const user = "/user";
 const property = "/property";

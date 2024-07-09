@@ -93,7 +93,7 @@ export default function RootLayout() {
               title: data.senderName,
               body: data.text,
               data: {
-                url: `exp://192.168.88.223:8081/--/messages/${data.conversationID}/${data.senderName}`,
+                url: `exp://192.168.145.108:8081/--/messages/${data.conversationID}/${data.senderName}`,
               }
             },
             trigger: null,

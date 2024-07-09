@@ -36,7 +36,7 @@ export const createMessages = (
             body,
             title: senderName,
             data: {
-                url: `exp://192.168.88.223:8081/--/messages/${conversationID}/${senderName}`,
+                url: `exp://192.168.145.108:8081/--/messages/${conversationID}/${senderName}`,
             },
         });
     }
