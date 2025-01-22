@@ -13,7 +13,8 @@
 
 - Examples:
   Sign in and Sign up screen:
-  ![1a41666079d6da8883c7](https://github.com/user-attachments/assets/163dde6e-fce4-469c-a640-81f50fd8c163)
+  ![image](https://github.com/user-attachments/assets/1d7bbd36-aab7-4c9e-b673-00fe88f18042)
+
   ![ecbec8f2d744741a2d55](https://github.com/user-attachments/assets/ea2ad8ad-4bbe-4380-acb1-2d736e3e824e)
   
   ![8726c102ddb47eea27a5 (1)](https://github.com/user-attachments/assets/6fd47eb4-8bb9-4da8-bfa0-1dcd4e78ab60)
